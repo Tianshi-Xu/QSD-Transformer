@@ -240,7 +240,7 @@ def get_args_parser():
 
     parser.add_argument(
         "--nb_classes",
-        default=500,
+        default=1000,
         type=int,
         help="number of the classification types",
     )
@@ -273,7 +273,7 @@ def get_args_parser():
         default=False,
         help="Enabling distributed evaluation (recommended during training for faster monitor",
     )
-    parser.add_argument("--num_workers", default=10, type=int)
+    parser.add_argument("--num_workers", default=8, type=int)
     parser.add_argument(
         "--pin_mem",
         action="store_true",
@@ -449,13 +449,13 @@ def main(args):
         optimizer=optimizer,
         loss_scaler=loss_scaler,
     )
-
-    if args.eval:
+    print(model)
+    if args.finetune:
         test_stats = evaluate(data_loader_val, model, device)
         print(
             f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
         )
-        exit(0)
+        # exit(0)
 
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
@@ -478,24 +478,22 @@ def main(args):
             log_writer=log_writer,
             args=args,
             model_ema=model_ema)
-        if args.output_dir and (epoch % 50 == 0 or epoch + 1 == args.epochs):
-            print("Saving model at epoch:", epoch)
-            misc.save_model(
-                args=args,
-                model=model_ema,
-                model_without_ddp=model_without_ddp,
-                optimizer=optimizer,
-                loss_scaler=loss_scaler,
-                epoch=epoch,
-            )
+        misc.save_model(
+            args=args,
+            model=model_ema,
+            model_without_ddp=model_without_ddp,
+            optimizer=optimizer,
+            loss_scaler=loss_scaler,
+            epoch=epoch,
+            name = "last_checkpoint"
+        )
 
         test_stats = evaluate(data_loader_val, model, device)
         print(
             f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
         )
-        max_accuracy = max(max_accuracy, test_stats["acc1"])
-        print(f"Max accuracy: {max_accuracy:.2f}%")
-        if args.output_dir and test_stats["acc1"] > best_acc:
+        
+        if args.output_dir and test_stats["acc1"] > max_accuracy:
             print("Saving model at epoch:", epoch)
             misc.save_model(
                 args=args,
@@ -504,8 +502,11 @@ def main(args):
                 optimizer=optimizer,
                 loss_scaler=loss_scaler,
                 epoch=epoch,
+                name = "best_checkpoint"
             )
-
+            best_epoch = epoch
+        max_accuracy = max(max_accuracy, test_stats["acc1"])
+        print(f"Max accuracy: {max_accuracy:.2f}%")
         if log_writer is not None:
             log_writer.add_scalar("perf/test_acc1", test_stats["acc1"], epoch)
             log_writer.add_scalar("perf/test_acc5", test_stats["acc5"], epoch)
@@ -529,7 +530,7 @@ def main(args):
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print("Training time {}".format(total_time_str))
-
+    print("Best accuracy: {:.2f}% at epoch {}".format(max_accuracy, best_epoch))
 if __name__ == "__main__":
     args = get_args_parser()
     args = args.parse_args()
