@@ -286,11 +286,14 @@ class MS_Attention_RepConv_qkv_id(nn.Module):
 
         self.head_lif = Multispike()
 
-        self.q_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        # self.q_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        self.q_conv = Conv2dLSQ(dim, dim, 1, 1, bias=False)
 
-        self.k_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        # self.k_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        self.k_conv = Conv2dLSQ(dim, dim, 1, 1, bias=False)
 
-        self.v_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        # self.v_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        self.v_conv = Conv2dLSQ(dim, dim, 1, 1, bias=False)
 
         self.q_lif = Multispike()
 
@@ -301,7 +304,9 @@ class MS_Attention_RepConv_qkv_id(nn.Module):
         self.attn_lif = Multispike_att()
 
         self.proj_conv = nn.Sequential(
-            RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim)
+            # RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim)
+            Conv2dLSQ(dim, dim, 1, 1, bias=False), 
+            nn.BatchNorm2d(dim)
         )
 
     def forward(self, x):
@@ -739,12 +744,13 @@ if __name__ == "__main__":
     #     import torchsummary
     # state_dict = torch.load('/userhome/DYS/15M/checkpoint-199.pth', map_location=torch.device('cuda'))
     model = spikformer_8_15M_CAFormer()
+    print(model)
     # msg = model.load_state_dict(state_dict["model"], strict=False)
     # print(msg)
-    x = torch.randn(1, 3, 224, 224)
-    print(model(x).shape)
-    print("Parameter numbers: {}".format(
-        sum(p.numel() for p in model.parameters())))
+    # x = torch.randn(1, 3, 224, 224)
+    # print(model(x).shape)
+    # print("Parameter numbers: {}".format(
+    #     sum(p.numel() for p in model.parameters())))
     # torchsummary.summary(model, (2, 3, 224, 224))
 
 

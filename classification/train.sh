@@ -5,10 +5,12 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 torchrun --standalone --nproc_per_node=8 \
   --warmup_epochs 15 \
   --epochs 300 \
   --model spikformer_8_15M_CAFormer \
-  --data_path /dataset/ImageNet2012/ \
-  --output_dir /userhome/DYS/0.2M_v2 \
-  --log_dir /userhome/DYS/0.2M_v2 \
-  --dist_eval
+  --data_path /opt/dataset/imagenet/ \
+  --output_dir ./out/att_no_conv3 \
+  --log_dir ./out/att_no_conv3 \
+  --dist_eval \
+  --finetune ../pretrained/15M_1x4_w4a1t4_74_5.pth \
+  --wbit 32
 # cd /code/MAE/sdtv2
 # CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 torchrun --standalone --nproc_per_node=8 \
 #   main_finetune.py \

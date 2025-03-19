@@ -37,6 +37,7 @@ from util.misc import NativeScalerWithGradNormCount as NativeScaler
 import models
 from engine_finetune import train_one_epoch, evaluate
 from timm.data import create_loader
+from quan_w import Conv2dLSQ
 
 # def change(train_set):
 #     import torchvision.datasets as datasets
@@ -291,6 +292,8 @@ def get_args_parser():
     parser.add_argument(
         "--dist_url", default="env://", help="url used to set up distributed training"
     )
+    
+    parser.add_argument("--wbit", default=4, type=int)
 
     return parser
 
@@ -389,6 +392,9 @@ def main(args):
         msg = model.load_state_dict(checkpoint_model, strict=False)
         print(msg)
     model.to(device)
+    for name,module in model.named_modules():
+        if isinstance(module, Conv2dLSQ):
+            module.nbits = args.wbit
     if args.MODEL_EMA:
         # Important to create EMA model after cuda(), DP wrapper, and AMP but
         # before SyncBN and DDP wrapper
