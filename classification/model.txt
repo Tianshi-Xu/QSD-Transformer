@@ -1,4 +1,4 @@
-Spiking_vit_MetaFormer(
+Spiking_vit_MetaFormer_less_conv(
   (downsample1_1): MS_DownSampling(
     (encode_conv): Conv2dLSQ(
       3, 32, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
@@ -90,72 +90,48 @@ Spiking_vit_MetaFormer(
     (encode_bn): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     (encode_lif): Multispike()
   )
-  (ConvBlock2_1): ModuleList(
-    (0): MS_ConvBlock(
-      (Conv): SepConv(
-        (lif1): Multispike()
-        (pwconv1): Conv2dLSQ(
-          128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+  (block2): ModuleList(
+    (0-3): 4 x MS_Block(
+      (attn): MS_Attention_RepConv_qkv_id(
+        (head_lif): Multispike()
+        (q_conv): Conv2dLSQ(
+          128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
           (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (lif2): Multispike()
-        (dwconv): Conv2dLSQ(
-          256, 256, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=256, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+        (k_conv): Conv2dLSQ(
+          128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
           (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (pwconv2): Conv2dLSQ(
-          256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+        (v_conv): Conv2dLSQ(
+          128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
           (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (q_lif): Multispike()
+        (k_lif): Multispike()
+        (v_lif): Multispike()
+        (attn_lif): Multispike_att()
+        (proj_conv): Sequential(
+          (0): Conv2dLSQ(
+            128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+            (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
+          )
+          (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        )
       )
-      (lif1): Multispike()
-      (conv1): Conv2dLSQ(
-        128, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-        (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-      )
-      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (lif2): Multispike()
-      (conv2): Conv2dLSQ(
-        512, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-        (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-      )
-      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-    )
-  )
-  (ConvBlock2_2): ModuleList(
-    (0): MS_ConvBlock(
-      (Conv): SepConv(
-        (lif1): Multispike()
-        (pwconv1): Conv2dLSQ(
-          128, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+      (mlp): MS_MLP(
+        (fc1_conv): Conv1dLSQ(
+          128, 512, kernel_size=(1,), stride=(1,), None
           (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-        (lif2): Multispike()
-        (dwconv): Conv2dLSQ(
-          256, 256, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=256, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+        (fc1_bn): BatchNorm1d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (fc1_lif): Multispike()
+        (fc2_conv): Conv1dLSQ(
+          512, 128, kernel_size=(1,), stride=(1,), None
           (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (pwconv2): Conv2dLSQ(
-          256, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-          (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-        )
-        (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (fc2_bn): BatchNorm1d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (fc2_lif): Multispike()
       )
-      (lif1): Multispike()
-      (conv1): Conv2dLSQ(
-        128, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-        (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-      )
-      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-      (lif2): Multispike()
-      (conv2): Conv2dLSQ(
-        512, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-        (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-      )
-      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
     )
   )
   (downsample3): MS_DownSampling(
@@ -170,107 +146,26 @@ Spiking_vit_MetaFormer(
     (0-5): 6 x MS_Block(
       (attn): MS_Attention_RepConv_qkv_id(
         (head_lif): Multispike()
-        (q_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  256, 256, kernel_size=(3, 3), stride=(1, 1), groups=256, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
-          )
-          (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (q_conv): Conv2dLSQ(
+          256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+          (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (k_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  256, 256, kernel_size=(3, 3), stride=(1, 1), groups=256, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
-          )
-          (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (k_conv): Conv2dLSQ(
+          256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+          (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (v_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  256, 256, kernel_size=(3, 3), stride=(1, 1), groups=256, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
-          )
-          (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (v_conv): Conv2dLSQ(
+          256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+          (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
         (q_lif): Multispike()
         (k_lif): Multispike()
         (v_lif): Multispike()
         (attn_lif): Multispike_att()
         (proj_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  256, 256, kernel_size=(3, 3), stride=(1, 1), groups=256, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
+          (0): Conv2dLSQ(
+            256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+            (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
           )
           (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         )
@@ -303,107 +198,26 @@ Spiking_vit_MetaFormer(
     (0-1): 2 x MS_Block(
       (attn): MS_Attention_RepConv_qkv_id(
         (head_lif): Multispike()
-        (q_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  360, 360, kernel_size=(3, 3), stride=(1, 1), groups=360, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
-          )
-          (1): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (q_conv): Conv2dLSQ(
+          360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+          (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (k_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  360, 360, kernel_size=(3, 3), stride=(1, 1), groups=360, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
-          )
-          (1): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (k_conv): Conv2dLSQ(
+          360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+          (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
-        (v_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  360, 360, kernel_size=(3, 3), stride=(1, 1), groups=360, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
-          )
-          (1): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (v_conv): Conv2dLSQ(
+          360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+          (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
         )
         (q_lif): Multispike()
         (k_lif): Multispike()
         (v_lif): Multispike()
         (attn_lif): Multispike_att()
         (proj_conv): Sequential(
-          (0): RepConv(
-            (body): Sequential(
-              (0): Conv2dLSQ(
-                360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-              )
-              (1): BNAndPadLayer(
-                (bn): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-              (2): Sequential(
-                (0): Conv2dLSQ(
-                  360, 360, kernel_size=(3, 3), stride=(1, 1), groups=360, bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (1): Conv2dLSQ(
-                  360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
-                  (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
-                )
-                (2): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
-              )
-            )
+          (0): Conv2dLSQ(
+            360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
+            (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
           )
           (1): BatchNorm2d(360, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
         )
@@ -430,3 +244,4 @@ Spiking_vit_MetaFormer(
     (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
   )
 )
+torch.Size([1, 1000])

@@ -1,16 +1,17 @@
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 torchrun --standalone --nproc_per_node=8 \
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5 torchrun --standalone --nproc_per_node=6 \
   main_finetune.py \
   --batch_size 196 \
-  --blr 6e-4 \
-  --warmup_epochs 15 \
-  --epochs 300 \
-  --model spikformer_8_15M_CAFormer \
+  --blr 3e-4 \
+  --warmup_epochs 10 \
+  --epochs 200 \
+  --model spikformer_8_15M_CAFormer_less_conv \
   --data_path /opt/dataset/imagenet/ \
-  --output_dir ./out/att_no_conv3 \
-  --log_dir ./out/att_no_conv3 \
+  --output_dir ./out/att_no_conv3_less_conv \
+  --log_dir ./out/att_no_conv3_less_conv \
   --dist_eval \
-  --finetune ../pretrained/15M_1x4_w4a1t4_74_5.pth \
+  --finetune /home/xts/code/SNN/QSD-Transformer/classification/out/att_no_conv3/best_checkpoint.pth \
   --wbit 32
+  # --resume /home/xts/code/SNN/QSD-Transformer/classification/out/att_no_conv3/best_checkpoint.pth
 # cd /code/MAE/sdtv2
 # CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 torchrun --standalone --nproc_per_node=8 \
 #   main_finetune.py \

@@ -23,6 +23,7 @@ import torch.backends.cudnn as cudnn
 from torch.utils.tensorboard import SummaryWriter
 from timm.utils import accuracy, AverageMeter, ModelEma
 import timm
+from timm.models import resume_checkpoint
 
 # assert timm.__version__ == "0.5.4"  # version check
 from timm.models.layers import trunc_normal_
@@ -265,7 +266,7 @@ def get_args_parser():
     parser.add_argument("--resume", default=None, help="resume from checkpoint")
 
     parser.add_argument(
-        "--start_epoch", default=0, type=int, metavar="N", help="start epoch"
+        "--start_epoch", default=None, type=int, metavar="N", help="start epoch"
     )
     parser.add_argument("--eval", action="store_true", help="Perform evaluation only")
     parser.add_argument(
@@ -385,7 +386,8 @@ def main(args):
     model = models.__dict__[args.model]()
     model.T = args.time_steps
     model_ema = None
-    if args.finetune and not args.eval:
+    resume_epoch = None
+    if (args.finetune and not args.eval and not args.resume):
         checkpoint = torch.load(args.finetune, map_location="cpu")
         print("Load pre-trained checkpoint from: %s" % args.finetune)
         checkpoint_model = checkpoint["model"]
@@ -394,7 +396,9 @@ def main(args):
     model.to(device)
     for name,module in model.named_modules():
         if isinstance(module, Conv2dLSQ):
+            module.set_bit(args.wbit)
             module.nbits = args.wbit
+            print(module)
     if args.MODEL_EMA:
         # Important to create EMA model after cuda(), DP wrapper, and AMP but
         # before SyncBN and DDP wrapper
@@ -438,7 +442,19 @@ def main(args):
     # optimizer = torch.optim.AdamW(param_groups, lr=args.lr) # lamb
     optimizer = optim_factory.Lamb(param_groups, trust_clip=True, lr=args.lr)
     loss_scaler = NativeScaler()
-
+    # if args.resume:
+    #     resume_epoch = resume_checkpoint(
+    #         model, args.resume,
+    #         optimizer=optimizer,
+    #         loss_scaler=loss_scaler,
+    #         log_info=misc.get_rank() == 0)  
+        
+    # if args.start_epoch is not None:
+    #     # a specified start_epoch will always override the resume epoch
+    #     start_epoch = args.start_epoch
+    # elif resume_epoch is not None:
+    #     start_epoch = resume_epoch
+        
     if mixup_fn is not None:
         # smoothing is handled with mixup label transform
         criterion = SoftTargetCrossEntropy()

@@ -605,6 +605,198 @@ class Spiking_vit_MetaFormer(nn.Module):
         return x
 
 
+class Spiking_vit_MetaFormer_less_conv(nn.Module):
+    def __init__(
+            self,
+            img_size_h=128,
+            img_size_w=128,
+            patch_size=16,
+            in_channels=2,
+            num_classes=11,
+            embed_dim=[64, 128, 256],
+            num_heads=[1, 2, 4],
+            mlp_ratios=[4, 4, 4],
+            qkv_bias=False,
+            qk_scale=None,
+            drop_rate=0.0,
+            attn_drop_rate=0.0,
+            drop_path_rate=0.0,
+            norm_layer=nn.LayerNorm,
+            depths=[6, 8, 6],
+            sr_ratios=[8, 4, 2],
+    ):
+        super().__init__()
+        self.num_classes = num_classes
+        self.depths = depths
+        self.T = 1
+        # embed_dim = [64, 128, 256, 512]
+
+        dpr = [
+            x.item() for x in torch.linspace(0, drop_path_rate, depths)
+        ]  # stochastic depth decay rule
+
+        self.downsample1_1 = MS_DownSampling(
+            in_channels=in_channels,
+            embed_dims=embed_dim[0] // 2,
+            kernel_size=7,
+            stride=2,
+            padding=3,
+            first_layer=True,
+        )
+
+        self.ConvBlock1_1 = nn.ModuleList(
+            [MS_ConvBlock(dim=embed_dim[0] // 2, mlp_ratio=mlp_ratios)]
+        )
+
+        self.downsample1_2 = MS_DownSampling(
+            in_channels=embed_dim[0] // 2,
+            embed_dims=embed_dim[0],
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            first_layer=False,
+        )
+
+        self.ConvBlock1_2 = nn.ModuleList(
+            [MS_ConvBlock(dim=embed_dim[0], mlp_ratio=mlp_ratios)]
+        )
+
+        self.downsample2 = MS_DownSampling(
+            in_channels=embed_dim[0],
+            embed_dims=embed_dim[1],
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            first_layer=False,
+        )
+
+        # self.ConvBlock2_1 = nn.ModuleList(
+        #     [MS_ConvBlock(dim=embed_dim[1], mlp_ratio=mlp_ratios)]
+        # )
+
+        # self.ConvBlock2_2 = nn.ModuleList(
+        #     [MS_ConvBlock(dim=embed_dim[1], mlp_ratio=mlp_ratios)]
+        # )
+
+
+
+        self.block2 = nn.ModuleList(
+            [
+                MS_Block(
+                    dim=embed_dim[1],
+                    num_heads=num_heads,
+                    mlp_ratio=mlp_ratios,
+                    qkv_bias=qkv_bias,
+                    qk_scale=qk_scale,
+                    drop=drop_rate,
+                    attn_drop=attn_drop_rate,
+                    drop_path=dpr[j],
+                    norm_layer=norm_layer,
+                    sr_ratio=sr_ratios,
+                )
+                for j in range(int(depths * 0.5))
+            ]
+        )
+        
+        self.downsample3 = MS_DownSampling(
+            in_channels=embed_dim[1],
+            embed_dims=embed_dim[2],
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            first_layer=False,
+        )
+
+        self.block3 = nn.ModuleList(
+            [
+                MS_Block(
+                    dim=embed_dim[2],
+                    num_heads=num_heads,
+                    mlp_ratio=mlp_ratios,
+                    qkv_bias=qkv_bias,
+                    qk_scale=qk_scale,
+                    drop=drop_rate,
+                    attn_drop=attn_drop_rate,
+                    drop_path=dpr[j],
+                    norm_layer=norm_layer,
+                    sr_ratio=sr_ratios,
+                )
+                for j in range(int(depths * 0.75))
+            ]
+        )
+
+        self.downsample4 = MS_DownSampling(
+            in_channels=embed_dim[2],
+            embed_dims=embed_dim[3],
+            kernel_size=3,
+            stride=1,
+            padding=1,
+            first_layer=False,
+        )
+
+        self.block4 = nn.ModuleList(
+            [
+                MS_Block(
+                    dim=embed_dim[3],
+                    num_heads=num_heads,
+                    mlp_ratio=mlp_ratios,
+                    qkv_bias=qkv_bias,
+                    qk_scale=qk_scale,
+                    drop=drop_rate,
+                    attn_drop=attn_drop_rate,
+                    drop_path=dpr[j],
+                    norm_layer=norm_layer,
+                    sr_ratio=sr_ratios,
+                )
+                for j in range(int(depths * 0.25))
+            ]
+        )
+
+        self.lif = Multispike()
+        self.head = LinearLSQ(embed_dim[3], num_classes) if num_classes > 0 else nn.Identity()
+
+        self.apply(self._init_weights)
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.Linear):
+            trunc_normal_(m.weight, std=0.02)
+            if isinstance(m, nn.Linear) and m.bias is not None:
+                nn.init.constant_(m.bias, 0)
+        elif isinstance(m, nn.LayerNorm):
+            nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
+
+    def forward_features(self, x):
+        x = self.downsample1_1(x)
+        for blk in self.ConvBlock1_1:
+            x = blk(x)
+        #         print(x.shape)
+        x = self.downsample1_2(x)
+        for blk in self.ConvBlock1_2:
+            x = blk(x)
+        #         print(x.shape)
+        x = self.downsample2(x)
+        for blk in self.block2:
+            x = blk(x)
+        #         print(x.shape)
+        x = self.downsample3(x)
+        for blk in self.block3:
+            x = blk(x)
+        #         print(x.shape)
+        x = self.downsample4(x)
+        for blk in self.block4:
+            x = blk(x)
+
+        return x  # T,B,C,N
+
+    def forward(self, x):
+        x = (x.unsqueeze(0)).repeat(self.T, 1, 1, 1, 1)
+        x = self.forward_features(x)
+        x = x.flatten(3).mean(3)
+        x = self.head(self.lif(x)).mean(0)
+        return x
+
+
 def spikformer_8_256_CAFormer(**kwargs):
     model = Spiking_vit_MetaFormer(
         img_size_h=224,
@@ -737,14 +929,35 @@ def spikformer_8_15M_CAFormer(**kwargs):
     )
     return model
 
+def spikformer_8_15M_CAFormer_less_conv(**kwargs):
+    model = Spiking_vit_MetaFormer_less_conv(
+        img_size_h=224,
+        img_size_w=224,
+        patch_size=16,
+        embed_dim=[64, 128, 256, 360],
+        num_heads=8,
+        mlp_ratios=4,
+        in_channels=3,
+        num_classes=1000,
+        qkv_bias=False,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=8,
+        sr_ratios=1,
+        **kwargs,
+    )
+    return model
+
 
 from timm.models import create_model
 
 if __name__ == "__main__":
     #     import torchsummary
     # state_dict = torch.load('/userhome/DYS/15M/checkpoint-199.pth', map_location=torch.device('cuda'))
-    model = spikformer_8_15M_CAFormer()
+    model = spikformer_8_15M_CAFormer_less_conv()
+    x= torch.randn(1, 3, 224, 224)
+    y = model(x)
     print(model)
+    print(y.shape)
     # msg = model.load_state_dict(state_dict["model"], strict=False)
     # print(msg)
     # x = torch.randn(1, 3, 224, 224)
