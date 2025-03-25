@@ -1,7 +1,7 @@
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5 torchrun --standalone --nproc_per_node=6 \
   main_finetune.py \
   --batch_size 196 \
-  --blr 3e-4 \
+  --blr 4e-4 \
   --warmup_epochs 10 \
   --epochs 200 \
   --model spikformer_8_15M_CAFormer_less_conv \

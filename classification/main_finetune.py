@@ -464,7 +464,7 @@ def main(args):
         criterion = torch.nn.CrossEntropyLoss()
 
     print("criterion = %s" % str(criterion))
-
+    args.start_epoch = 0
     misc.load_model(
         args=args,
         model_without_ddp=model_without_ddp,

@@ -1,11 +1,11 @@
 | distributed init (rank 0): env://, gpu 0
 | distributed init (rank 3): env://, gpu 3
-| distributed init (rank 5): env://, gpu 5
+| distributed init (rank 1): env://, gpu 1
 | distributed init (rank 2): env://, gpu 2
 | distributed init (rank 4): env://, gpu 4
-| distributed init (rank 1): env://, gpu 1
-[11:55:03.603301] job dir: /home/xts/code/SNN/QSD-Transformer/classification
-[11:55:03.603432] Namespace(batch_size=196,
+| distributed init (rank 5): env://, gpu 5
+[11:57:32.104422] job dir: /home/xts/code/SNN/QSD-Transformer/classification
+[11:57:32.104586] Namespace(batch_size=196,
 epochs=200,
 accum_iter=1,
 finetune='/home/xts/code/SNN/QSD-Transformer/classification/out/att_no_conv3/best_checkpoint.pth',
@@ -58,7 +58,7 @@ rank=0,
 gpu=0,
 distributed=True,
 dist_backend='nccl')
-[11:55:06.853509] Dataset ImageFolder
+[11:57:35.812055] Dataset ImageFolder
     Number of datapoints: 1281167
     Root location: /opt/dataset/imagenet/train
     StandardTransform
@@ -85,7 +85,7 @@ Transform: Compose(
                Normalize(mean=tensor([0.4850, 0.4560, 0.4060]), std=tensor([0.2290, 0.2240, 0.2250]))
                RandomErasing(p=0.25, mode=pixel, count=(1, 1))
            )
-[11:55:07.498266] Dataset ImageFolder
+[11:57:36.401754] Dataset ImageFolder
     Number of datapoints: 50000
     Root location: /opt/dataset/imagenet/val
     StandardTransform
@@ -95,264 +95,264 @@ Transform: Compose(
                ToTensor()
                Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
            )
-[11:55:07.498632] Sampler_train = <torch.utils.data.distributed.DistributedSampler object at 0x7f14ef572b30>
-[11:55:07.498674] Warning: Enabling distributed evaluation with an eval dataset not divisible by process number. This will slightly alter validation results as extra duplicate entries are added to achieve equal num of samples per-process.
-[11:55:07.775040] Load pre-trained checkpoint from: /home/xts/code/SNN/QSD-Transformer/classification/out/att_no_conv3/best_checkpoint.pth
-[11:55:07.799071] _IncompatibleKeys(missing_keys=['block2.0.layer_scale1', 'block2.0.layer_scale2', 'block2.0.attn.q_conv.weight', 'block2.0.attn.q_conv.alpha', 'block2.0.attn.q_conv.init_state', 'block2.0.attn.q_conv.act.alpha', 'block2.0.attn.q_conv.act.zero_point', 'block2.0.attn.q_conv.act.init_state', 'block2.0.attn.q_conv.act.signed', 'block2.0.attn.k_conv.weight', 'block2.0.attn.k_conv.alpha', 'block2.0.attn.k_conv.init_state', 'block2.0.attn.k_conv.act.alpha', 'block2.0.attn.k_conv.act.zero_point', 'block2.0.attn.k_conv.act.init_state', 'block2.0.attn.k_conv.act.signed', 'block2.0.attn.v_conv.weight', 'block2.0.attn.v_conv.alpha', 'block2.0.attn.v_conv.init_state', 'block2.0.attn.v_conv.act.alpha', 'block2.0.attn.v_conv.act.zero_point', 'block2.0.attn.v_conv.act.init_state', 'block2.0.attn.v_conv.act.signed', 'block2.0.attn.proj_conv.0.weight', 'block2.0.attn.proj_conv.0.alpha', 'block2.0.attn.proj_conv.0.init_state', 'block2.0.attn.proj_conv.0.act.alpha', 'block2.0.attn.proj_conv.0.act.zero_point', 'block2.0.attn.proj_conv.0.act.init_state', 'block2.0.attn.proj_conv.0.act.signed', 'block2.0.attn.proj_conv.1.weight', 'block2.0.attn.proj_conv.1.bias', 'block2.0.attn.proj_conv.1.running_mean', 'block2.0.attn.proj_conv.1.running_var', 'block2.0.mlp.fc1_conv.weight', 'block2.0.mlp.fc1_conv.bias', 'block2.0.mlp.fc1_conv.alpha', 'block2.0.mlp.fc1_conv.init_state', 'block2.0.mlp.fc1_conv.act.alpha', 'block2.0.mlp.fc1_conv.act.zero_point', 'block2.0.mlp.fc1_conv.act.init_state', 'block2.0.mlp.fc1_conv.act.signed', 'block2.0.mlp.fc1_bn.weight', 'block2.0.mlp.fc1_bn.bias', 'block2.0.mlp.fc1_bn.running_mean', 'block2.0.mlp.fc1_bn.running_var', 'block2.0.mlp.fc2_conv.weight', 'block2.0.mlp.fc2_conv.bias', 'block2.0.mlp.fc2_conv.alpha', 'block2.0.mlp.fc2_conv.init_state', 'block2.0.mlp.fc2_conv.act.alpha', 'block2.0.mlp.fc2_conv.act.zero_point', 'block2.0.mlp.fc2_conv.act.init_state', 'block2.0.mlp.fc2_conv.act.signed', 'block2.0.mlp.fc2_bn.weight', 'block2.0.mlp.fc2_bn.bias', 'block2.0.mlp.fc2_bn.running_mean', 'block2.0.mlp.fc2_bn.running_var', 'block2.1.layer_scale1', 'block2.1.layer_scale2', 'block2.1.attn.q_conv.weight', 'block2.1.attn.q_conv.alpha', 'block2.1.attn.q_conv.init_state', 'block2.1.attn.q_conv.act.alpha', 'block2.1.attn.q_conv.act.zero_point', 'block2.1.attn.q_conv.act.init_state', 'block2.1.attn.q_conv.act.signed', 'block2.1.attn.k_conv.weight', 'block2.1.attn.k_conv.alpha', 'block2.1.attn.k_conv.init_state', 'block2.1.attn.k_conv.act.alpha', 'block2.1.attn.k_conv.act.zero_point', 'block2.1.attn.k_conv.act.init_state', 'block2.1.attn.k_conv.act.signed', 'block2.1.attn.v_conv.weight', 'block2.1.attn.v_conv.alpha', 'block2.1.attn.v_conv.init_state', 'block2.1.attn.v_conv.act.alpha', 'block2.1.attn.v_conv.act.zero_point', 'block2.1.attn.v_conv.act.init_state', 'block2.1.attn.v_conv.act.signed', 'block2.1.attn.proj_conv.0.weight', 'block2.1.attn.proj_conv.0.alpha', 'block2.1.attn.proj_conv.0.init_state', 'block2.1.attn.proj_conv.0.act.alpha', 'block2.1.attn.proj_conv.0.act.zero_point', 'block2.1.attn.proj_conv.0.act.init_state', 'block2.1.attn.proj_conv.0.act.signed', 'block2.1.attn.proj_conv.1.weight', 'block2.1.attn.proj_conv.1.bias', 'block2.1.attn.proj_conv.1.running_mean', 'block2.1.attn.proj_conv.1.running_var', 'block2.1.mlp.fc1_conv.weight', 'block2.1.mlp.fc1_conv.bias', 'block2.1.mlp.fc1_conv.alpha', 'block2.1.mlp.fc1_conv.init_state', 'block2.1.mlp.fc1_conv.act.alpha', 'block2.1.mlp.fc1_conv.act.zero_point', 'block2.1.mlp.fc1_conv.act.init_state', 'block2.1.mlp.fc1_conv.act.signed', 'block2.1.mlp.fc1_bn.weight', 'block2.1.mlp.fc1_bn.bias', 'block2.1.mlp.fc1_bn.running_mean', 'block2.1.mlp.fc1_bn.running_var', 'block2.1.mlp.fc2_conv.weight', 'block2.1.mlp.fc2_conv.bias', 'block2.1.mlp.fc2_conv.alpha', 'block2.1.mlp.fc2_conv.init_state', 'block2.1.mlp.fc2_conv.act.alpha', 'block2.1.mlp.fc2_conv.act.zero_point', 'block2.1.mlp.fc2_conv.act.init_state', 'block2.1.mlp.fc2_conv.act.signed', 'block2.1.mlp.fc2_bn.weight', 'block2.1.mlp.fc2_bn.bias', 'block2.1.mlp.fc2_bn.running_mean', 'block2.1.mlp.fc2_bn.running_var', 'block2.2.layer_scale1', 'block2.2.layer_scale2', 'block2.2.attn.q_conv.weight', 'block2.2.attn.q_conv.alpha', 'block2.2.attn.q_conv.init_state', 'block2.2.attn.q_conv.act.alpha', 'block2.2.attn.q_conv.act.zero_point', 'block2.2.attn.q_conv.act.init_state', 'block2.2.attn.q_conv.act.signed', 'block2.2.attn.k_conv.weight', 'block2.2.attn.k_conv.alpha', 'block2.2.attn.k_conv.init_state', 'block2.2.attn.k_conv.act.alpha', 'block2.2.attn.k_conv.act.zero_point', 'block2.2.attn.k_conv.act.init_state', 'block2.2.attn.k_conv.act.signed', 'block2.2.attn.v_conv.weight', 'block2.2.attn.v_conv.alpha', 'block2.2.attn.v_conv.init_state', 'block2.2.attn.v_conv.act.alpha', 'block2.2.attn.v_conv.act.zero_point', 'block2.2.attn.v_conv.act.init_state', 'block2.2.attn.v_conv.act.signed', 'block2.2.attn.proj_conv.0.weight', 'block2.2.attn.proj_conv.0.alpha', 'block2.2.attn.proj_conv.0.init_state', 'block2.2.attn.proj_conv.0.act.alpha', 'block2.2.attn.proj_conv.0.act.zero_point', 'block2.2.attn.proj_conv.0.act.init_state', 'block2.2.attn.proj_conv.0.act.signed', 'block2.2.attn.proj_conv.1.weight', 'block2.2.attn.proj_conv.1.bias', 'block2.2.attn.proj_conv.1.running_mean', 'block2.2.attn.proj_conv.1.running_var', 'block2.2.mlp.fc1_conv.weight', 'block2.2.mlp.fc1_conv.bias', 'block2.2.mlp.fc1_conv.alpha', 'block2.2.mlp.fc1_conv.init_state', 'block2.2.mlp.fc1_conv.act.alpha', 'block2.2.mlp.fc1_conv.act.zero_point', 'block2.2.mlp.fc1_conv.act.init_state', 'block2.2.mlp.fc1_conv.act.signed', 'block2.2.mlp.fc1_bn.weight', 'block2.2.mlp.fc1_bn.bias', 'block2.2.mlp.fc1_bn.running_mean', 'block2.2.mlp.fc1_bn.running_var', 'block2.2.mlp.fc2_conv.weight', 'block2.2.mlp.fc2_conv.bias', 'block2.2.mlp.fc2_conv.alpha', 'block2.2.mlp.fc2_conv.init_state', 'block2.2.mlp.fc2_conv.act.alpha', 'block2.2.mlp.fc2_conv.act.zero_point', 'block2.2.mlp.fc2_conv.act.init_state', 'block2.2.mlp.fc2_conv.act.signed', 'block2.2.mlp.fc2_bn.weight', 'block2.2.mlp.fc2_bn.bias', 'block2.2.mlp.fc2_bn.running_mean', 'block2.2.mlp.fc2_bn.running_var', 'block2.3.layer_scale1', 'block2.3.layer_scale2', 'block2.3.attn.q_conv.weight', 'block2.3.attn.q_conv.alpha', 'block2.3.attn.q_conv.init_state', 'block2.3.attn.q_conv.act.alpha', 'block2.3.attn.q_conv.act.zero_point', 'block2.3.attn.q_conv.act.init_state', 'block2.3.attn.q_conv.act.signed', 'block2.3.attn.k_conv.weight', 'block2.3.attn.k_conv.alpha', 'block2.3.attn.k_conv.init_state', 'block2.3.attn.k_conv.act.alpha', 'block2.3.attn.k_conv.act.zero_point', 'block2.3.attn.k_conv.act.init_state', 'block2.3.attn.k_conv.act.signed', 'block2.3.attn.v_conv.weight', 'block2.3.attn.v_conv.alpha', 'block2.3.attn.v_conv.init_state', 'block2.3.attn.v_conv.act.alpha', 'block2.3.attn.v_conv.act.zero_point', 'block2.3.attn.v_conv.act.init_state', 'block2.3.attn.v_conv.act.signed', 'block2.3.attn.proj_conv.0.weight', 'block2.3.attn.proj_conv.0.alpha', 'block2.3.attn.proj_conv.0.init_state', 'block2.3.attn.proj_conv.0.act.alpha', 'block2.3.attn.proj_conv.0.act.zero_point', 'block2.3.attn.proj_conv.0.act.init_state', 'block2.3.attn.proj_conv.0.act.signed', 'block2.3.attn.proj_conv.1.weight', 'block2.3.attn.proj_conv.1.bias', 'block2.3.attn.proj_conv.1.running_mean', 'block2.3.attn.proj_conv.1.running_var', 'block2.3.mlp.fc1_conv.weight', 'block2.3.mlp.fc1_conv.bias', 'block2.3.mlp.fc1_conv.alpha', 'block2.3.mlp.fc1_conv.init_state', 'block2.3.mlp.fc1_conv.act.alpha', 'block2.3.mlp.fc1_conv.act.zero_point', 'block2.3.mlp.fc1_conv.act.init_state', 'block2.3.mlp.fc1_conv.act.signed', 'block2.3.mlp.fc1_bn.weight', 'block2.3.mlp.fc1_bn.bias', 'block2.3.mlp.fc1_bn.running_mean', 'block2.3.mlp.fc1_bn.running_var', 'block2.3.mlp.fc2_conv.weight', 'block2.3.mlp.fc2_conv.bias', 'block2.3.mlp.fc2_conv.alpha', 'block2.3.mlp.fc2_conv.init_state', 'block2.3.mlp.fc2_conv.act.alpha', 'block2.3.mlp.fc2_conv.act.zero_point', 'block2.3.mlp.fc2_conv.act.init_state', 'block2.3.mlp.fc2_conv.act.signed', 'block2.3.mlp.fc2_bn.weight', 'block2.3.mlp.fc2_bn.bias', 'block2.3.mlp.fc2_bn.running_mean', 'block2.3.mlp.fc2_bn.running_var'], unexpected_keys=['ConvBlock2_1.0.Conv.pwconv1.weight', 'ConvBlock2_1.0.Conv.pwconv1.alpha', 'ConvBlock2_1.0.Conv.pwconv1.init_state', 'ConvBlock2_1.0.Conv.pwconv1.act.alpha', 'ConvBlock2_1.0.Conv.pwconv1.act.zero_point', 'ConvBlock2_1.0.Conv.pwconv1.act.init_state', 'ConvBlock2_1.0.Conv.pwconv1.act.signed', 'ConvBlock2_1.0.Conv.bn1.weight', 'ConvBlock2_1.0.Conv.bn1.bias', 'ConvBlock2_1.0.Conv.bn1.running_mean', 'ConvBlock2_1.0.Conv.bn1.running_var', 'ConvBlock2_1.0.Conv.bn1.num_batches_tracked', 'ConvBlock2_1.0.Conv.dwconv.weight', 'ConvBlock2_1.0.Conv.dwconv.alpha', 'ConvBlock2_1.0.Conv.dwconv.init_state', 'ConvBlock2_1.0.Conv.dwconv.act.alpha', 'ConvBlock2_1.0.Conv.dwconv.act.zero_point', 'ConvBlock2_1.0.Conv.dwconv.act.init_state', 'ConvBlock2_1.0.Conv.dwconv.act.signed', 'ConvBlock2_1.0.Conv.pwconv2.weight', 'ConvBlock2_1.0.Conv.pwconv2.alpha', 'ConvBlock2_1.0.Conv.pwconv2.init_state', 'ConvBlock2_1.0.Conv.pwconv2.act.alpha', 'ConvBlock2_1.0.Conv.pwconv2.act.zero_point', 'ConvBlock2_1.0.Conv.pwconv2.act.init_state', 'ConvBlock2_1.0.Conv.pwconv2.act.signed', 'ConvBlock2_1.0.Conv.bn2.weight', 'ConvBlock2_1.0.Conv.bn2.bias', 'ConvBlock2_1.0.Conv.bn2.running_mean', 'ConvBlock2_1.0.Conv.bn2.running_var', 'ConvBlock2_1.0.Conv.bn2.num_batches_tracked', 'ConvBlock2_1.0.conv1.weight', 'ConvBlock2_1.0.conv1.alpha', 'ConvBlock2_1.0.conv1.init_state', 'ConvBlock2_1.0.conv1.act.alpha', 'ConvBlock2_1.0.conv1.act.zero_point', 'ConvBlock2_1.0.conv1.act.init_state', 'ConvBlock2_1.0.conv1.act.signed', 'ConvBlock2_1.0.bn1.weight', 'ConvBlock2_1.0.bn1.bias', 'ConvBlock2_1.0.bn1.running_mean', 'ConvBlock2_1.0.bn1.running_var', 'ConvBlock2_1.0.bn1.num_batches_tracked', 'ConvBlock2_1.0.conv2.weight', 'ConvBlock2_1.0.conv2.alpha', 'ConvBlock2_1.0.conv2.init_state', 'ConvBlock2_1.0.conv2.act.alpha', 'ConvBlock2_1.0.conv2.act.zero_point', 'ConvBlock2_1.0.conv2.act.init_state', 'ConvBlock2_1.0.conv2.act.signed', 'ConvBlock2_1.0.bn2.weight', 'ConvBlock2_1.0.bn2.bias', 'ConvBlock2_1.0.bn2.running_mean', 'ConvBlock2_1.0.bn2.running_var', 'ConvBlock2_1.0.bn2.num_batches_tracked', 'ConvBlock2_2.0.Conv.pwconv1.weight', 'ConvBlock2_2.0.Conv.pwconv1.alpha', 'ConvBlock2_2.0.Conv.pwconv1.init_state', 'ConvBlock2_2.0.Conv.pwconv1.act.alpha', 'ConvBlock2_2.0.Conv.pwconv1.act.zero_point', 'ConvBlock2_2.0.Conv.pwconv1.act.init_state', 'ConvBlock2_2.0.Conv.pwconv1.act.signed', 'ConvBlock2_2.0.Conv.bn1.weight', 'ConvBlock2_2.0.Conv.bn1.bias', 'ConvBlock2_2.0.Conv.bn1.running_mean', 'ConvBlock2_2.0.Conv.bn1.running_var', 'ConvBlock2_2.0.Conv.bn1.num_batches_tracked', 'ConvBlock2_2.0.Conv.dwconv.weight', 'ConvBlock2_2.0.Conv.dwconv.alpha', 'ConvBlock2_2.0.Conv.dwconv.init_state', 'ConvBlock2_2.0.Conv.dwconv.act.alpha', 'ConvBlock2_2.0.Conv.dwconv.act.zero_point', 'ConvBlock2_2.0.Conv.dwconv.act.init_state', 'ConvBlock2_2.0.Conv.dwconv.act.signed', 'ConvBlock2_2.0.Conv.pwconv2.weight', 'ConvBlock2_2.0.Conv.pwconv2.alpha', 'ConvBlock2_2.0.Conv.pwconv2.init_state', 'ConvBlock2_2.0.Conv.pwconv2.act.alpha', 'ConvBlock2_2.0.Conv.pwconv2.act.zero_point', 'ConvBlock2_2.0.Conv.pwconv2.act.init_state', 'ConvBlock2_2.0.Conv.pwconv2.act.signed', 'ConvBlock2_2.0.Conv.bn2.weight', 'ConvBlock2_2.0.Conv.bn2.bias', 'ConvBlock2_2.0.Conv.bn2.running_mean', 'ConvBlock2_2.0.Conv.bn2.running_var', 'ConvBlock2_2.0.Conv.bn2.num_batches_tracked', 'ConvBlock2_2.0.conv1.weight', 'ConvBlock2_2.0.conv1.alpha', 'ConvBlock2_2.0.conv1.init_state', 'ConvBlock2_2.0.conv1.act.alpha', 'ConvBlock2_2.0.conv1.act.zero_point', 'ConvBlock2_2.0.conv1.act.init_state', 'ConvBlock2_2.0.conv1.act.signed', 'ConvBlock2_2.0.bn1.weight', 'ConvBlock2_2.0.bn1.bias', 'ConvBlock2_2.0.bn1.running_mean', 'ConvBlock2_2.0.bn1.running_var', 'ConvBlock2_2.0.bn1.num_batches_tracked', 'ConvBlock2_2.0.conv2.weight', 'ConvBlock2_2.0.conv2.alpha', 'ConvBlock2_2.0.conv2.init_state', 'ConvBlock2_2.0.conv2.act.alpha', 'ConvBlock2_2.0.conv2.act.zero_point', 'ConvBlock2_2.0.conv2.act.init_state', 'ConvBlock2_2.0.conv2.act.signed', 'ConvBlock2_2.0.bn2.weight', 'ConvBlock2_2.0.bn2.bias', 'ConvBlock2_2.0.bn2.running_mean', 'ConvBlock2_2.0.bn2.running_var', 'ConvBlock2_2.0.bn2.num_batches_tracked'])
-[11:55:07.837247] Conv2dLSQ(
+[11:57:36.402063] Sampler_train = <torch.utils.data.distributed.DistributedSampler object at 0x7f4b36f96b30>
+[11:57:36.402097] Warning: Enabling distributed evaluation with an eval dataset not divisible by process number. This will slightly alter validation results as extra duplicate entries are added to achieve equal num of samples per-process.
+[11:57:36.659417] Load pre-trained checkpoint from: /home/xts/code/SNN/QSD-Transformer/classification/out/att_no_conv3/best_checkpoint.pth
+[11:57:36.683803] _IncompatibleKeys(missing_keys=['block2.0.layer_scale1', 'block2.0.layer_scale2', 'block2.0.attn.q_conv.weight', 'block2.0.attn.q_conv.alpha', 'block2.0.attn.q_conv.init_state', 'block2.0.attn.q_conv.act.alpha', 'block2.0.attn.q_conv.act.zero_point', 'block2.0.attn.q_conv.act.init_state', 'block2.0.attn.q_conv.act.signed', 'block2.0.attn.k_conv.weight', 'block2.0.attn.k_conv.alpha', 'block2.0.attn.k_conv.init_state', 'block2.0.attn.k_conv.act.alpha', 'block2.0.attn.k_conv.act.zero_point', 'block2.0.attn.k_conv.act.init_state', 'block2.0.attn.k_conv.act.signed', 'block2.0.attn.v_conv.weight', 'block2.0.attn.v_conv.alpha', 'block2.0.attn.v_conv.init_state', 'block2.0.attn.v_conv.act.alpha', 'block2.0.attn.v_conv.act.zero_point', 'block2.0.attn.v_conv.act.init_state', 'block2.0.attn.v_conv.act.signed', 'block2.0.attn.proj_conv.0.weight', 'block2.0.attn.proj_conv.0.alpha', 'block2.0.attn.proj_conv.0.init_state', 'block2.0.attn.proj_conv.0.act.alpha', 'block2.0.attn.proj_conv.0.act.zero_point', 'block2.0.attn.proj_conv.0.act.init_state', 'block2.0.attn.proj_conv.0.act.signed', 'block2.0.attn.proj_conv.1.weight', 'block2.0.attn.proj_conv.1.bias', 'block2.0.attn.proj_conv.1.running_mean', 'block2.0.attn.proj_conv.1.running_var', 'block2.0.mlp.fc1_conv.weight', 'block2.0.mlp.fc1_conv.bias', 'block2.0.mlp.fc1_conv.alpha', 'block2.0.mlp.fc1_conv.init_state', 'block2.0.mlp.fc1_conv.act.alpha', 'block2.0.mlp.fc1_conv.act.zero_point', 'block2.0.mlp.fc1_conv.act.init_state', 'block2.0.mlp.fc1_conv.act.signed', 'block2.0.mlp.fc1_bn.weight', 'block2.0.mlp.fc1_bn.bias', 'block2.0.mlp.fc1_bn.running_mean', 'block2.0.mlp.fc1_bn.running_var', 'block2.0.mlp.fc2_conv.weight', 'block2.0.mlp.fc2_conv.bias', 'block2.0.mlp.fc2_conv.alpha', 'block2.0.mlp.fc2_conv.init_state', 'block2.0.mlp.fc2_conv.act.alpha', 'block2.0.mlp.fc2_conv.act.zero_point', 'block2.0.mlp.fc2_conv.act.init_state', 'block2.0.mlp.fc2_conv.act.signed', 'block2.0.mlp.fc2_bn.weight', 'block2.0.mlp.fc2_bn.bias', 'block2.0.mlp.fc2_bn.running_mean', 'block2.0.mlp.fc2_bn.running_var', 'block2.1.layer_scale1', 'block2.1.layer_scale2', 'block2.1.attn.q_conv.weight', 'block2.1.attn.q_conv.alpha', 'block2.1.attn.q_conv.init_state', 'block2.1.attn.q_conv.act.alpha', 'block2.1.attn.q_conv.act.zero_point', 'block2.1.attn.q_conv.act.init_state', 'block2.1.attn.q_conv.act.signed', 'block2.1.attn.k_conv.weight', 'block2.1.attn.k_conv.alpha', 'block2.1.attn.k_conv.init_state', 'block2.1.attn.k_conv.act.alpha', 'block2.1.attn.k_conv.act.zero_point', 'block2.1.attn.k_conv.act.init_state', 'block2.1.attn.k_conv.act.signed', 'block2.1.attn.v_conv.weight', 'block2.1.attn.v_conv.alpha', 'block2.1.attn.v_conv.init_state', 'block2.1.attn.v_conv.act.alpha', 'block2.1.attn.v_conv.act.zero_point', 'block2.1.attn.v_conv.act.init_state', 'block2.1.attn.v_conv.act.signed', 'block2.1.attn.proj_conv.0.weight', 'block2.1.attn.proj_conv.0.alpha', 'block2.1.attn.proj_conv.0.init_state', 'block2.1.attn.proj_conv.0.act.alpha', 'block2.1.attn.proj_conv.0.act.zero_point', 'block2.1.attn.proj_conv.0.act.init_state', 'block2.1.attn.proj_conv.0.act.signed', 'block2.1.attn.proj_conv.1.weight', 'block2.1.attn.proj_conv.1.bias', 'block2.1.attn.proj_conv.1.running_mean', 'block2.1.attn.proj_conv.1.running_var', 'block2.1.mlp.fc1_conv.weight', 'block2.1.mlp.fc1_conv.bias', 'block2.1.mlp.fc1_conv.alpha', 'block2.1.mlp.fc1_conv.init_state', 'block2.1.mlp.fc1_conv.act.alpha', 'block2.1.mlp.fc1_conv.act.zero_point', 'block2.1.mlp.fc1_conv.act.init_state', 'block2.1.mlp.fc1_conv.act.signed', 'block2.1.mlp.fc1_bn.weight', 'block2.1.mlp.fc1_bn.bias', 'block2.1.mlp.fc1_bn.running_mean', 'block2.1.mlp.fc1_bn.running_var', 'block2.1.mlp.fc2_conv.weight', 'block2.1.mlp.fc2_conv.bias', 'block2.1.mlp.fc2_conv.alpha', 'block2.1.mlp.fc2_conv.init_state', 'block2.1.mlp.fc2_conv.act.alpha', 'block2.1.mlp.fc2_conv.act.zero_point', 'block2.1.mlp.fc2_conv.act.init_state', 'block2.1.mlp.fc2_conv.act.signed', 'block2.1.mlp.fc2_bn.weight', 'block2.1.mlp.fc2_bn.bias', 'block2.1.mlp.fc2_bn.running_mean', 'block2.1.mlp.fc2_bn.running_var', 'block2.2.layer_scale1', 'block2.2.layer_scale2', 'block2.2.attn.q_conv.weight', 'block2.2.attn.q_conv.alpha', 'block2.2.attn.q_conv.init_state', 'block2.2.attn.q_conv.act.alpha', 'block2.2.attn.q_conv.act.zero_point', 'block2.2.attn.q_conv.act.init_state', 'block2.2.attn.q_conv.act.signed', 'block2.2.attn.k_conv.weight', 'block2.2.attn.k_conv.alpha', 'block2.2.attn.k_conv.init_state', 'block2.2.attn.k_conv.act.alpha', 'block2.2.attn.k_conv.act.zero_point', 'block2.2.attn.k_conv.act.init_state', 'block2.2.attn.k_conv.act.signed', 'block2.2.attn.v_conv.weight', 'block2.2.attn.v_conv.alpha', 'block2.2.attn.v_conv.init_state', 'block2.2.attn.v_conv.act.alpha', 'block2.2.attn.v_conv.act.zero_point', 'block2.2.attn.v_conv.act.init_state', 'block2.2.attn.v_conv.act.signed', 'block2.2.attn.proj_conv.0.weight', 'block2.2.attn.proj_conv.0.alpha', 'block2.2.attn.proj_conv.0.init_state', 'block2.2.attn.proj_conv.0.act.alpha', 'block2.2.attn.proj_conv.0.act.zero_point', 'block2.2.attn.proj_conv.0.act.init_state', 'block2.2.attn.proj_conv.0.act.signed', 'block2.2.attn.proj_conv.1.weight', 'block2.2.attn.proj_conv.1.bias', 'block2.2.attn.proj_conv.1.running_mean', 'block2.2.attn.proj_conv.1.running_var', 'block2.2.mlp.fc1_conv.weight', 'block2.2.mlp.fc1_conv.bias', 'block2.2.mlp.fc1_conv.alpha', 'block2.2.mlp.fc1_conv.init_state', 'block2.2.mlp.fc1_conv.act.alpha', 'block2.2.mlp.fc1_conv.act.zero_point', 'block2.2.mlp.fc1_conv.act.init_state', 'block2.2.mlp.fc1_conv.act.signed', 'block2.2.mlp.fc1_bn.weight', 'block2.2.mlp.fc1_bn.bias', 'block2.2.mlp.fc1_bn.running_mean', 'block2.2.mlp.fc1_bn.running_var', 'block2.2.mlp.fc2_conv.weight', 'block2.2.mlp.fc2_conv.bias', 'block2.2.mlp.fc2_conv.alpha', 'block2.2.mlp.fc2_conv.init_state', 'block2.2.mlp.fc2_conv.act.alpha', 'block2.2.mlp.fc2_conv.act.zero_point', 'block2.2.mlp.fc2_conv.act.init_state', 'block2.2.mlp.fc2_conv.act.signed', 'block2.2.mlp.fc2_bn.weight', 'block2.2.mlp.fc2_bn.bias', 'block2.2.mlp.fc2_bn.running_mean', 'block2.2.mlp.fc2_bn.running_var', 'block2.3.layer_scale1', 'block2.3.layer_scale2', 'block2.3.attn.q_conv.weight', 'block2.3.attn.q_conv.alpha', 'block2.3.attn.q_conv.init_state', 'block2.3.attn.q_conv.act.alpha', 'block2.3.attn.q_conv.act.zero_point', 'block2.3.attn.q_conv.act.init_state', 'block2.3.attn.q_conv.act.signed', 'block2.3.attn.k_conv.weight', 'block2.3.attn.k_conv.alpha', 'block2.3.attn.k_conv.init_state', 'block2.3.attn.k_conv.act.alpha', 'block2.3.attn.k_conv.act.zero_point', 'block2.3.attn.k_conv.act.init_state', 'block2.3.attn.k_conv.act.signed', 'block2.3.attn.v_conv.weight', 'block2.3.attn.v_conv.alpha', 'block2.3.attn.v_conv.init_state', 'block2.3.attn.v_conv.act.alpha', 'block2.3.attn.v_conv.act.zero_point', 'block2.3.attn.v_conv.act.init_state', 'block2.3.attn.v_conv.act.signed', 'block2.3.attn.proj_conv.0.weight', 'block2.3.attn.proj_conv.0.alpha', 'block2.3.attn.proj_conv.0.init_state', 'block2.3.attn.proj_conv.0.act.alpha', 'block2.3.attn.proj_conv.0.act.zero_point', 'block2.3.attn.proj_conv.0.act.init_state', 'block2.3.attn.proj_conv.0.act.signed', 'block2.3.attn.proj_conv.1.weight', 'block2.3.attn.proj_conv.1.bias', 'block2.3.attn.proj_conv.1.running_mean', 'block2.3.attn.proj_conv.1.running_var', 'block2.3.mlp.fc1_conv.weight', 'block2.3.mlp.fc1_conv.bias', 'block2.3.mlp.fc1_conv.alpha', 'block2.3.mlp.fc1_conv.init_state', 'block2.3.mlp.fc1_conv.act.alpha', 'block2.3.mlp.fc1_conv.act.zero_point', 'block2.3.mlp.fc1_conv.act.init_state', 'block2.3.mlp.fc1_conv.act.signed', 'block2.3.mlp.fc1_bn.weight', 'block2.3.mlp.fc1_bn.bias', 'block2.3.mlp.fc1_bn.running_mean', 'block2.3.mlp.fc1_bn.running_var', 'block2.3.mlp.fc2_conv.weight', 'block2.3.mlp.fc2_conv.bias', 'block2.3.mlp.fc2_conv.alpha', 'block2.3.mlp.fc2_conv.init_state', 'block2.3.mlp.fc2_conv.act.alpha', 'block2.3.mlp.fc2_conv.act.zero_point', 'block2.3.mlp.fc2_conv.act.init_state', 'block2.3.mlp.fc2_conv.act.signed', 'block2.3.mlp.fc2_bn.weight', 'block2.3.mlp.fc2_bn.bias', 'block2.3.mlp.fc2_bn.running_mean', 'block2.3.mlp.fc2_bn.running_var'], unexpected_keys=['ConvBlock2_1.0.Conv.pwconv1.weight', 'ConvBlock2_1.0.Conv.pwconv1.alpha', 'ConvBlock2_1.0.Conv.pwconv1.init_state', 'ConvBlock2_1.0.Conv.pwconv1.act.alpha', 'ConvBlock2_1.0.Conv.pwconv1.act.zero_point', 'ConvBlock2_1.0.Conv.pwconv1.act.init_state', 'ConvBlock2_1.0.Conv.pwconv1.act.signed', 'ConvBlock2_1.0.Conv.bn1.weight', 'ConvBlock2_1.0.Conv.bn1.bias', 'ConvBlock2_1.0.Conv.bn1.running_mean', 'ConvBlock2_1.0.Conv.bn1.running_var', 'ConvBlock2_1.0.Conv.bn1.num_batches_tracked', 'ConvBlock2_1.0.Conv.dwconv.weight', 'ConvBlock2_1.0.Conv.dwconv.alpha', 'ConvBlock2_1.0.Conv.dwconv.init_state', 'ConvBlock2_1.0.Conv.dwconv.act.alpha', 'ConvBlock2_1.0.Conv.dwconv.act.zero_point', 'ConvBlock2_1.0.Conv.dwconv.act.init_state', 'ConvBlock2_1.0.Conv.dwconv.act.signed', 'ConvBlock2_1.0.Conv.pwconv2.weight', 'ConvBlock2_1.0.Conv.pwconv2.alpha', 'ConvBlock2_1.0.Conv.pwconv2.init_state', 'ConvBlock2_1.0.Conv.pwconv2.act.alpha', 'ConvBlock2_1.0.Conv.pwconv2.act.zero_point', 'ConvBlock2_1.0.Conv.pwconv2.act.init_state', 'ConvBlock2_1.0.Conv.pwconv2.act.signed', 'ConvBlock2_1.0.Conv.bn2.weight', 'ConvBlock2_1.0.Conv.bn2.bias', 'ConvBlock2_1.0.Conv.bn2.running_mean', 'ConvBlock2_1.0.Conv.bn2.running_var', 'ConvBlock2_1.0.Conv.bn2.num_batches_tracked', 'ConvBlock2_1.0.conv1.weight', 'ConvBlock2_1.0.conv1.alpha', 'ConvBlock2_1.0.conv1.init_state', 'ConvBlock2_1.0.conv1.act.alpha', 'ConvBlock2_1.0.conv1.act.zero_point', 'ConvBlock2_1.0.conv1.act.init_state', 'ConvBlock2_1.0.conv1.act.signed', 'ConvBlock2_1.0.bn1.weight', 'ConvBlock2_1.0.bn1.bias', 'ConvBlock2_1.0.bn1.running_mean', 'ConvBlock2_1.0.bn1.running_var', 'ConvBlock2_1.0.bn1.num_batches_tracked', 'ConvBlock2_1.0.conv2.weight', 'ConvBlock2_1.0.conv2.alpha', 'ConvBlock2_1.0.conv2.init_state', 'ConvBlock2_1.0.conv2.act.alpha', 'ConvBlock2_1.0.conv2.act.zero_point', 'ConvBlock2_1.0.conv2.act.init_state', 'ConvBlock2_1.0.conv2.act.signed', 'ConvBlock2_1.0.bn2.weight', 'ConvBlock2_1.0.bn2.bias', 'ConvBlock2_1.0.bn2.running_mean', 'ConvBlock2_1.0.bn2.running_var', 'ConvBlock2_1.0.bn2.num_batches_tracked', 'ConvBlock2_2.0.Conv.pwconv1.weight', 'ConvBlock2_2.0.Conv.pwconv1.alpha', 'ConvBlock2_2.0.Conv.pwconv1.init_state', 'ConvBlock2_2.0.Conv.pwconv1.act.alpha', 'ConvBlock2_2.0.Conv.pwconv1.act.zero_point', 'ConvBlock2_2.0.Conv.pwconv1.act.init_state', 'ConvBlock2_2.0.Conv.pwconv1.act.signed', 'ConvBlock2_2.0.Conv.bn1.weight', 'ConvBlock2_2.0.Conv.bn1.bias', 'ConvBlock2_2.0.Conv.bn1.running_mean', 'ConvBlock2_2.0.Conv.bn1.running_var', 'ConvBlock2_2.0.Conv.bn1.num_batches_tracked', 'ConvBlock2_2.0.Conv.dwconv.weight', 'ConvBlock2_2.0.Conv.dwconv.alpha', 'ConvBlock2_2.0.Conv.dwconv.init_state', 'ConvBlock2_2.0.Conv.dwconv.act.alpha', 'ConvBlock2_2.0.Conv.dwconv.act.zero_point', 'ConvBlock2_2.0.Conv.dwconv.act.init_state', 'ConvBlock2_2.0.Conv.dwconv.act.signed', 'ConvBlock2_2.0.Conv.pwconv2.weight', 'ConvBlock2_2.0.Conv.pwconv2.alpha', 'ConvBlock2_2.0.Conv.pwconv2.init_state', 'ConvBlock2_2.0.Conv.pwconv2.act.alpha', 'ConvBlock2_2.0.Conv.pwconv2.act.zero_point', 'ConvBlock2_2.0.Conv.pwconv2.act.init_state', 'ConvBlock2_2.0.Conv.pwconv2.act.signed', 'ConvBlock2_2.0.Conv.bn2.weight', 'ConvBlock2_2.0.Conv.bn2.bias', 'ConvBlock2_2.0.Conv.bn2.running_mean', 'ConvBlock2_2.0.Conv.bn2.running_var', 'ConvBlock2_2.0.Conv.bn2.num_batches_tracked', 'ConvBlock2_2.0.conv1.weight', 'ConvBlock2_2.0.conv1.alpha', 'ConvBlock2_2.0.conv1.init_state', 'ConvBlock2_2.0.conv1.act.alpha', 'ConvBlock2_2.0.conv1.act.zero_point', 'ConvBlock2_2.0.conv1.act.init_state', 'ConvBlock2_2.0.conv1.act.signed', 'ConvBlock2_2.0.bn1.weight', 'ConvBlock2_2.0.bn1.bias', 'ConvBlock2_2.0.bn1.running_mean', 'ConvBlock2_2.0.bn1.running_var', 'ConvBlock2_2.0.bn1.num_batches_tracked', 'ConvBlock2_2.0.conv2.weight', 'ConvBlock2_2.0.conv2.alpha', 'ConvBlock2_2.0.conv2.init_state', 'ConvBlock2_2.0.conv2.act.alpha', 'ConvBlock2_2.0.conv2.act.zero_point', 'ConvBlock2_2.0.conv2.act.init_state', 'ConvBlock2_2.0.conv2.act.signed', 'ConvBlock2_2.0.bn2.weight', 'ConvBlock2_2.0.bn2.bias', 'ConvBlock2_2.0.bn2.running_mean', 'ConvBlock2_2.0.bn2.running_var', 'ConvBlock2_2.0.bn2.num_batches_tracked'])
+[11:57:36.717739] Conv2dLSQ(
   3, 32, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837384] Conv2dLSQ(
+[11:57:36.717890] Conv2dLSQ(
   32, 64, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837438] Conv2dLSQ(
+[11:57:36.717951] Conv2dLSQ(
   64, 64, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=64, bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837480] Conv2dLSQ(
+[11:57:36.717993] Conv2dLSQ(
   64, 32, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837517] Conv2dLSQ(
+[11:57:36.718031] Conv2dLSQ(
   32, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837554] Conv2dLSQ(
+[11:57:36.718070] Conv2dLSQ(
   128, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837589] Conv2dLSQ(
+[11:57:36.718107] Conv2dLSQ(
   32, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837629] Conv2dLSQ(
+[11:57:36.718149] Conv2dLSQ(
   64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837664] Conv2dLSQ(
+[11:57:36.718184] Conv2dLSQ(
   128, 128, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), groups=128, bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837697] Conv2dLSQ(
+[11:57:36.718217] Conv2dLSQ(
   128, 64, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837730] Conv2dLSQ(
+[11:57:36.718251] Conv2dLSQ(
   64, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837764] Conv2dLSQ(
+[11:57:36.718286] Conv2dLSQ(
   256, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837798] Conv2dLSQ(
+[11:57:36.718320] Conv2dLSQ(
   64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837846] Conv2dLSQ(
+[11:57:36.718364] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837878] Conv2dLSQ(
+[11:57:36.718395] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837909] Conv2dLSQ(
+[11:57:36.718426] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.837946] Conv2dLSQ(
+[11:57:36.718466] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838000] Conv2dLSQ(
+[11:57:36.718517] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838031] Conv2dLSQ(
+[11:57:36.718550] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838061] Conv2dLSQ(
+[11:57:36.718582] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838097] Conv2dLSQ(
+[11:57:36.718619] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838144] Conv2dLSQ(
+[11:57:36.718666] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838178] Conv2dLSQ(
+[11:57:36.718702] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838209] Conv2dLSQ(
+[11:57:36.718732] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838245] Conv2dLSQ(
+[11:57:36.718768] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838291] Conv2dLSQ(
+[11:57:36.718814] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838323] Conv2dLSQ(
+[11:57:36.718855] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838353] Conv2dLSQ(
+[11:57:36.718887] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838389] Conv2dLSQ(
+[11:57:36.718923] Conv2dLSQ(
   128, 128, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838435] Conv2dLSQ(
+[11:57:36.718968] Conv2dLSQ(
   128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838476] Conv2dLSQ(
+[11:57:36.719008] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838507] Conv2dLSQ(
+[11:57:36.719040] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838537] Conv2dLSQ(
+[11:57:36.719070] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838575] Conv2dLSQ(
+[11:57:36.719108] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838621] Conv2dLSQ(
+[11:57:36.719153] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838652] Conv2dLSQ(
+[11:57:36.719186] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838683] Conv2dLSQ(
+[11:57:36.719216] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838718] Conv2dLSQ(
+[11:57:36.719252] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838763] Conv2dLSQ(
+[11:57:36.719298] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838794] Conv2dLSQ(
+[11:57:36.719328] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838828] Conv2dLSQ(
+[11:57:36.719358] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838865] Conv2dLSQ(
+[11:57:36.719393] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838915] Conv2dLSQ(
+[11:57:36.719443] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838947] Conv2dLSQ(
+[11:57:36.719475] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.838978] Conv2dLSQ(
+[11:57:36.719506] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839013] Conv2dLSQ(
+[11:57:36.719543] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839059] Conv2dLSQ(
+[11:57:36.719592] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839089] Conv2dLSQ(
+[11:57:36.719623] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839119] Conv2dLSQ(
+[11:57:36.719654] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839155] Conv2dLSQ(
+[11:57:36.719689] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839201] Conv2dLSQ(
+[11:57:36.719738] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839232] Conv2dLSQ(
+[11:57:36.719769] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839261] Conv2dLSQ(
+[11:57:36.719800] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839304] Conv2dLSQ(
+[11:57:36.719851] Conv2dLSQ(
   256, 256, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839348] Conv2dLSQ(
+[11:57:36.719896] Conv2dLSQ(
   256, 360, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839387] Conv2dLSQ(
+[11:57:36.719937] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839418] Conv2dLSQ(
+[11:57:36.719969] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839448] Conv2dLSQ(
+[11:57:36.719999] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839483] Conv2dLSQ(
+[11:57:36.720035] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839528] Conv2dLSQ(
+[11:57:36.720082] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839559] Conv2dLSQ(
+[11:57:36.720113] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839589] Conv2dLSQ(
+[11:57:36.720145] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839625] Conv2dLSQ(
+[11:57:36.720181] Conv2dLSQ(
   360, 360, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
   (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
 )
-[11:55:07.839676] Using EMA...
-[11:55:07.903335] Model = Spiking_vit_MetaFormer_less_conv(
+[11:57:36.720237] Using EMA...
+[11:57:36.786180] Model = Spiking_vit_MetaFormer_less_conv(
   (downsample1_1): MS_DownSampling(
     (encode_conv): Conv2dLSQ(
       3, 32, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), {'nbits': 32, 'mode': <Qmodes.kernel_wise: 2>}
@@ -598,13 +598,13 @@ Transform: Compose(
     (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
   )
 )
-[11:55:07.903380] number of params (M): 10.73
-[11:55:07.903401] base lr: 3.00e-04
-[11:55:07.903413] actual lr: 1.38e-03
-[11:55:07.903423] accumulate grad iterations: 1
-[11:55:07.903434] effective batch size: 1176
-[11:55:07.933022] criterion = LabelSmoothingCrossEntropy()
-[11:55:07.933068] DistributedDataParallel(
+[11:57:36.786236] number of params (M): 10.73
+[11:57:36.786255] base lr: 3.00e-04
+[11:57:36.786266] actual lr: 1.38e-03
+[11:57:36.786276] accumulate grad iterations: 1
+[11:57:36.786287] effective batch size: 1176
+[11:57:36.884290] criterion = LabelSmoothingCrossEntropy()
+[11:57:36.884338] DistributedDataParallel(
   (module): Spiking_vit_MetaFormer_less_conv(
     (downsample1_1): MS_DownSampling(
       (encode_conv): Conv2dLSQ(
@@ -852,4 +852,12 @@ Transform: Compose(
     )
   )
 )
-[11:55:19.707014] Test:  [ 0/43]  eta: 0:08:26  loss: 8.0472 (8.0472)  acc1: 2.5510 (2.5510)  acc5: 3.5714 (3.5714)  time: 11.7689  data: 9.5148  max mem: 5585
+[11:57:43.553293] Test:  [ 0/43]  eta: 0:04:46  loss: 8.0472 (8.0472)  acc1: 2.5510 (2.5510)  acc5: 3.5714 (3.5714)  time: 6.6618  data: 4.8183  max mem: 5585
+[11:57:56.351700] Test:  [42/43]  eta: 0:00:00  loss: 8.1042 (8.1112)  acc1: 0.5102 (0.8399)  acc5: 2.5510 (2.7718)  time: 0.4267  data: 0.2800  max mem: 5585
+[11:57:56.445829] Test: Total time: 0:00:19 (0.4548 s / it)
+[11:57:56.461545] * Acc@1 0.832 Acc@5 2.798 loss 8.114
+[11:57:56.461805] Accuracy of the network on the 50000 test images: 0.8%
+[11:57:56.461876] Start training for 200 epochs
+[11:57:56.465601] log_dir: ./out/att_no_conv3_less_conv
+[11:58:12.391703] Epoch: [0]  [   0/1089]  eta: 4:49:01  lr: 0.000000  loss: 4.8181 (4.8181)  time: 15.9239  data: 11.1687  max mem: 21455
+[12:00:24.449936] Epoch: [0]  [ 100/1089]  eta: 0:24:09  lr: 0.000013  loss: 4.8328 (4.8892)  time: 1.2187  data: 0.0004  max mem: 21455
