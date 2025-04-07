@@ -388,7 +388,7 @@ def main(args):
     model_ema = None
     resume_epoch = None
     if (args.finetune and not args.eval and not args.resume):
-        checkpoint = torch.load(args.finetune, map_location="cpu")
+        checkpoint = torch.load(args.finetune, map_location="cpu", weights_only=False)
         print("Load pre-trained checkpoint from: %s" % args.finetune)
         checkpoint_model = checkpoint["model"]
         msg = model.load_state_dict(checkpoint_model, strict=False)
