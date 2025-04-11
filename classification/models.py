@@ -1044,7 +1044,7 @@ def spikformer_8_15M_CAFormer_less_conv(**kwargs):
     )
     return model
 
-def spikformer_12_512_CAFormer_less_conv(**kwargs):
+def spikformer_8_512_CAFormer_less_conv(**kwargs):
     model = Spiking_vit_MetaFormer_less_conv(
         img_size_h=224,
         img_size_w=224,
@@ -1056,7 +1056,7 @@ def spikformer_12_512_CAFormer_less_conv(**kwargs):
         num_classes=1000,
         qkv_bias=False,
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        depths=12,
+        depths=8,
         sr_ratios=1,
         **kwargs,
     )
@@ -1067,7 +1067,8 @@ from timm.models import create_model
 if __name__ == "__main__":
     #     import torchsummary
     # state_dict = torch.load('/userhome/DYS/15M/checkpoint-199.pth', map_location=torch.device('cuda'))
-    model = spikformer_8_15M_CAFormer_less_conv(att_type="SDSA1")
+    model = spikformer_8_512_CAFormer_less_conv(att_type="SDSA1")
+    model.T = 1
     x= torch.randn(1, 3, 224, 224)
     y = model(x)
     print(model)
