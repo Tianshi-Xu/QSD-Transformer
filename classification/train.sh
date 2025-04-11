@@ -4,14 +4,14 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5 torchrun --standalone --nproc_per_node=6 \
   --blr 3e-4 \
   --warmup_epochs 15 \
   --epochs 300 \
-  --model spikformer_8_15M_CAFormer_less_conv \
+  --model spikformer_12_512_CAFormer_less_conv_SDSA1 \
   --data_path /data/dataset/imagenet/ \
-  --output_dir ./out/att_no_conv3_less_conv_b4 \
-  --log_dir ./out/att_no_conv3_less_conv_b4 \
+  --output_dir ./out/att_no_conv3_less_conv_SDSA1 \
+  --log_dir ./out/att_no_conv3_less_conv_SDSA1 \
   --dist_eval \
-  --finetune ./out/att_no_conv3_less_conv2/best_checkpoint.pth \
   --att_type SDSA1 \
   --wbit 32
+  # --finetune ./out/att_no_conv3_less_conv2/best_checkpoint.pth \
   # --resume /home/xts/code/SNN/QSD-Transformer/classification/out/att_no_conv3/best_checkpoint.pth
 # cd /code/MAE/sdtv2
 # CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 torchrun --standalone --nproc_per_node=8 \

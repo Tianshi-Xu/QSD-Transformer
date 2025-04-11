@@ -1044,6 +1044,23 @@ def spikformer_8_15M_CAFormer_less_conv(**kwargs):
     )
     return model
 
+def spikformer_12_512_CAFormer_less_conv(**kwargs):
+    model = Spiking_vit_MetaFormer_less_conv(
+        img_size_h=224,
+        img_size_w=224,
+        patch_size=16,
+        embed_dim=[128, 256, 512, 640],
+        num_heads=8,
+        mlp_ratios=4,
+        in_channels=3,
+        num_classes=1000,
+        qkv_bias=False,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        depths=12,
+        sr_ratios=1,
+        **kwargs,
+    )
+    return model
 
 from timm.models import create_model
 
