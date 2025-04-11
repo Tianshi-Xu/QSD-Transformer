@@ -295,6 +295,8 @@ def get_args_parser():
     )
     
     parser.add_argument("--wbit", default=4, type=int)
+    
+    parser.add_argument("--att_type", default="SDSA3", type=str)
 
     return parser
 

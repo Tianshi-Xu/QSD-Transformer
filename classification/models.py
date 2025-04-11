@@ -354,6 +354,90 @@ class MS_Attention_RepConv_qkv_id(nn.Module):
 
         return x
 
+class SDSA1(nn.Module):
+    def __init__(
+            self,
+            dim,
+            num_heads=8,
+            qkv_bias=False,
+            qk_scale=None,
+            attn_drop=0.0,
+            proj_drop=0.0,
+            sr_ratio=1,
+    ):
+        super().__init__()
+        assert (
+                dim % num_heads == 0
+        ), f"dim {dim} should be divided by num_heads {num_heads}."
+        self.dim = dim
+        self.num_heads = num_heads
+        self.scale = 0.25
+
+        self.head_lif = Multispike()
+
+        # self.q_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        self.q_conv = Conv2dLSQ(dim, dim, 1, 1, bias=False)
+
+        # self.k_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        self.k_conv = Conv2dLSQ(dim, dim, 1, 1, bias=False)
+
+        # self.v_conv = nn.Sequential(RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim))
+        self.v_conv = Conv2dLSQ(dim, dim, 1, 1, bias=False)
+        self.q_lif = Multispike()
+
+        self.k_lif = Multispike()
+
+        self.v_lif = Multispike()
+        self.attn_lif = Multispike_att()
+
+        self.proj_conv = nn.Sequential(
+            # RepConv(dim, dim, bias=False), nn.BatchNorm2d(dim)
+            Conv2dLSQ(dim, dim, 1, 1, bias=False), 
+            nn.BatchNorm2d(dim)
+        )
+
+    def forward(self, x):
+        T, B, C, H, W = x.shape
+        N = H * W
+
+        x = self.head_lif(x)
+
+        q = self.q_conv(x.flatten(0, 1)).reshape(T, B, C, H, W)
+        k = self.k_conv(x.flatten(0, 1)).reshape(T, B, C, H, W)
+        v = self.v_conv(x.flatten(0, 1)).reshape(T, B, C, H, W)
+
+        q = self.q_lif(q).flatten(3)
+        q = (
+            q.transpose(-1, -2)
+                .reshape(T, B, N, self.num_heads, C // self.num_heads)
+                .permute(0, 1, 3, 2, 4)
+                .contiguous()
+        )
+
+        k = self.k_lif(k).flatten(3)
+        k = (
+            k.transpose(-1, -2)
+                .reshape(T, B, N, self.num_heads, C // self.num_heads)
+                .permute(0, 1, 3, 2, 4)
+                .contiguous()
+        )
+
+        v = self.v_lif(v).flatten(3)
+        v = (
+            v.transpose(-1, -2)
+                .reshape(T, B, N, self.num_heads, C // self.num_heads)
+                .permute(0, 1, 3, 2, 4)
+                .contiguous()
+        )
+
+        x = torch.sum(k * v, dim=3, keepdim=True) # sum in N dimension
+        x = self.attn_lif(x)
+        x = x + q
+        x = x.reshape(T, B, C, H, W)
+        x = x.flatten(0, 1)
+        x = self.proj_conv(x).reshape(T, B, C, H, W)
+
+        return x
 
 class MS_Block(nn.Module):
     def __init__(
@@ -369,19 +453,31 @@ class MS_Block(nn.Module):
             norm_layer=nn.LayerNorm,
             sr_ratio=1,
             init_values=1e-6,
+            att_type="SDSA3",
     ):
         super().__init__()
-
-        self.attn = MS_Attention_RepConv_qkv_id(
-            dim,
-            num_heads=num_heads,
-            qkv_bias=qkv_bias,
-            qk_scale=qk_scale,
-            attn_drop=attn_drop,
-            proj_drop=drop,
-            sr_ratio=sr_ratio,
-
-        )
+        if att_type == "SDSA3":
+            self.attn = MS_Attention_RepConv_qkv_id(
+                dim,
+                num_heads=num_heads,
+                qkv_bias=qkv_bias,
+                qk_scale=qk_scale,
+                attn_drop=attn_drop,
+                proj_drop=drop,
+                sr_ratio=sr_ratio,
+            )
+        elif att_type == "SDSA1":
+            self.attn = SDSA1(
+                dim,
+                num_heads=num_heads,
+                qkv_bias=qkv_bias,
+                qk_scale=qk_scale,
+                attn_drop=attn_drop,
+                proj_drop=drop,
+                sr_ratio=sr_ratio,
+            )
+        else:
+            raise ValueError(f"Invalid attention type: {att_type}")
         self.layer_scale1 = nn.Parameter(init_values * torch.ones((dim)), requires_grad=True)
         self.layer_scale2 = nn.Parameter(init_values * torch.ones((dim)), requires_grad=True)
 
@@ -624,6 +720,7 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
             norm_layer=nn.LayerNorm,
             depths=[6, 8, 6],
             sr_ratios=[8, 4, 2],
+            att_type="SDSA3",
     ):
         super().__init__()
         self.num_classes = num_classes
@@ -678,8 +775,6 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
         #     [MS_ConvBlock(dim=embed_dim[1], mlp_ratio=mlp_ratios)]
         # )
 
-
-
         self.block2 = nn.ModuleList(
             [
                 MS_Block(
@@ -693,6 +788,7 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
                     drop_path=dpr[j],
                     norm_layer=norm_layer,
                     sr_ratio=sr_ratios,
+                    att_type=att_type,
                 )
                 for j in range(int(depths * 0.5))
             ]
@@ -701,9 +797,9 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
         self.downsample3 = MS_DownSampling(
             in_channels=embed_dim[1],
             embed_dims=embed_dim[2],
-            kernel_size=3,
-            stride=2,
-            padding=1,
+            kernel_size=1,
+            stride=1,
+            padding=0,
             first_layer=False,
         )
 
@@ -720,6 +816,7 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
                     drop_path=dpr[j],
                     norm_layer=norm_layer,
                     sr_ratio=sr_ratios,
+                    att_type=att_type,
                 )
                 for j in range(int(depths * 0.75))
             ]
@@ -728,9 +825,9 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
         self.downsample4 = MS_DownSampling(
             in_channels=embed_dim[2],
             embed_dims=embed_dim[3],
-            kernel_size=3,
+            kernel_size=1,
             stride=1,
-            padding=1,
+            padding=0,
             first_layer=False,
         )
 
@@ -747,6 +844,7 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
                     drop_path=dpr[j],
                     norm_layer=norm_layer,
                     sr_ratio=sr_ratios,
+                    att_type=att_type,
                 )
                 for j in range(int(depths * 0.25))
             ]
@@ -953,7 +1051,7 @@ from timm.models import create_model
 if __name__ == "__main__":
     #     import torchsummary
     # state_dict = torch.load('/userhome/DYS/15M/checkpoint-199.pth', map_location=torch.device('cuda'))
-    model = spikformer_8_15M_CAFormer_less_conv()
+    model = spikformer_8_15M_CAFormer_less_conv(att_type="SDSA1")
     x= torch.randn(1, 3, 224, 224)
     y = model(x)
     print(model)
