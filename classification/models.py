@@ -20,7 +20,6 @@ relu4 = ReLUX(thre=4)
 
 import torch
 
-
 class multispike(torch.autograd.Function):
     @staticmethod
     def forward(ctx, input, lens):
