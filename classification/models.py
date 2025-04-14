@@ -1067,18 +1067,22 @@ from timm.models import create_model
 if __name__ == "__main__":
     #     import torchsummary
     # state_dict = torch.load('/userhome/DYS/15M/checkpoint-199.pth', map_location=torch.device('cuda'))
-    model = spikformer_8_512_CAFormer_less_conv(att_type="SDSA1")
+    # model = spikformer_8_512_CAFormer_less_conv(att_type="SDSA1")
+    model = spikformer_8_512_CAFormer()
     model.T = 1
     x= torch.randn(1, 3, 224, 224)
     y = model(x)
-    print(model)
-    print(y.shape)
+    # print(model)
+    # print(y.shape)
     # msg = model.load_state_dict(state_dict["model"], strict=False)
     # print(msg)
     # x = torch.randn(1, 3, 224, 224)
     # print(model(x).shape)
-    # print("Parameter numbers: {}".format(
-    #     sum(p.numel() for p in model.parameters())))
-    # torchsummary.summary(model, (2, 3, 224, 224))
+    print("Parameter numbers: {}".format(
+        sum(p.numel() for p in model.parameters())))
+    checkpoint = torch.load("../pretrained_model/55M_kd.pth",weights_only=False)
+    model.load_state_dict(checkpoint["model"], strict=True)
+    # print(checkpoint["model"].keys())
+    # torchsummary.summary(model, (1, 3, 224, 224))
 
 
