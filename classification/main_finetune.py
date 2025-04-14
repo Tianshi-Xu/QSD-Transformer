@@ -393,6 +393,9 @@ def main(args):
         checkpoint = torch.load(args.finetune, map_location="cpu", weights_only=False)
         print("Load pre-trained checkpoint from: %s" % args.finetune)
         checkpoint_model = checkpoint["model"]
+        if "downsample3.encode_conv.weight" in checkpoint_model.keys() or "downsample4.encode_conv.weight" in checkpoint_model.keys():
+            checkpoint_model.pop("downsample3.encode_conv.weight")
+            checkpoint_model.pop("downsample4.encode_conv.weight")
         msg = model.load_state_dict(checkpoint_model, strict=False)
         print(msg)
     model.to(device)
