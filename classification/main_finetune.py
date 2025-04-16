@@ -385,7 +385,7 @@ def main(args):
             label_smoothing=args.smoothing,
             num_classes=args.nb_classes,
         )
-    model = models.__dict__[args.model]()
+    model = models.__dict__[args.model](att_type=args.att_type)
     model.T = args.time_steps
     model_ema = None
     resume_epoch = None
@@ -403,7 +403,7 @@ def main(args):
         if isinstance(module, Conv2dLSQ):
             module.set_bit(args.wbit)
             module.nbits = args.wbit
-            print(module)
+            # print(module)
     if args.MODEL_EMA:
         # Important to create EMA model after cuda(), DP wrapper, and AMP but
         # before SyncBN and DDP wrapper

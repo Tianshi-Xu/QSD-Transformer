@@ -1086,11 +1086,12 @@ from timm.models import create_model
 if __name__ == "__main__":
     #     import torchsummary
     # state_dict = torch.load('/userhome/DYS/15M/checkpoint-199.pth', map_location=torch.device('cuda'))
-    model = spikformer_8_512_CAFormer_less_conv(att_type="SDSA1")
+    model = spikformer_12_512_CAFormer_less_conv(att_type="SDSA1")
     model.T = 1
     x= torch.randn(1, 3, 224, 224)
-    y = model(x)
-    # print(model)
+    # y = model(x)
+    # print(y.shape)
+    print(model)  
     # print(y.shape)
     # msg = model.load_state_dict(state_dict["model"], strict=False)
     # print(msg)
