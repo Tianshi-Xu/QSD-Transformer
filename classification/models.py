@@ -720,6 +720,7 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
             depths=[6, 8, 6],
             sr_ratios=[8, 4, 2],
             att_type="SDSA3",
+            kd=False,
     ):
         super().__init__()
         self.num_classes = num_classes
@@ -861,6 +862,14 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
 
         self.lif = Multispike()
         self.head = LinearLSQ(embed_dim[3], num_classes) if num_classes > 0 else nn.Identity()
+        
+        self.kd = kd
+        if self.kd:
+            self.head_kd = (
+                nn.Linear(embed_dim[3], num_classes)
+                if num_classes > 0
+                else nn.Identity()
+            )
 
         self.apply(self._init_weights)
 
@@ -895,14 +904,20 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
         x = self.downsample4(x)
         for blk in self.block4:
             x = blk(x)
-
         return x  # T,B,C,N
 
     def forward(self, x):
         x = (x.unsqueeze(0)).repeat(self.T, 1, 1, 1, 1)
         x = self.forward_features(x)
         x = x.flatten(3).mean(3)
-        x = self.head(self.lif(x)).mean(0)
+        x_lif = self.lif(x)
+        x = self.head(x_lif).mean(0)
+        if self.kd:
+            x_kd = self.head_kd(x_lif).mean(0)
+            if self.training:
+                return x, x_kd
+            else:
+                return (x + x_kd) / 2
         return x
 
 
@@ -1069,6 +1084,7 @@ def spikformer_8_512_CAFormer_less_conv(**kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=8,
         sr_ratios=1,
+        kd=False,
         **kwargs,
     )
     return model
@@ -1087,6 +1103,7 @@ def spikformer_18_512_CAFormer_less_conv(**kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3,4,8,3],
         sr_ratios=1,
+        kd=False,
         **kwargs,
     )
     return model
