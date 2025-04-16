@@ -167,7 +167,7 @@ Spiking_vit_MetaFormer(
     (encode_lif): Multispike()
   )
   (block3): ModuleList(
-    (0-5): 6 x MS_Block(
+    (0-8): 9 x MS_Block(
       (attn): MS_Attention_RepConv_qkv_id(
         (head_lif): Multispike()
         (q_conv): Sequential(
@@ -300,7 +300,7 @@ Spiking_vit_MetaFormer(
     (encode_lif): Multispike()
   )
   (block4): ModuleList(
-    (0-1): 2 x MS_Block(
+    (0-2): 3 x MS_Block(
       (attn): MS_Attention_RepConv_qkv_id(
         (head_lif): Multispike()
         (q_conv): Sequential(
@@ -431,4 +431,4 @@ Spiking_vit_MetaFormer(
   )
 )
 torch.Size([1, 1000])
-Parameter numbers: 55607830
+Parameter numbers: 75022870

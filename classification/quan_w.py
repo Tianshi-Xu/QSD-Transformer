@@ -159,6 +159,7 @@ class Conv1dLSQ(_Conv1dQ):
         # wq = y.transpose(0, 1).reshape(self.weight.shape).detach() + self.weight - self.weight.detach()
         return F.conv1d(x, w_q, self.bias, self.stride,
                         self.padding, self.dilation, self.groups)
+
 class LinearLSQ_v2(_LinearQ_v2):
     def __init__(self, in_features, out_features, bias=True, nbits_w=4, **kwargs):
         super(LinearLSQ_v2, self).__init__(in_features=in_features,
