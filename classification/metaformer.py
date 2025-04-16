@@ -224,6 +224,7 @@ default_cfgs = {
     ),
     "caformer_b36_in21ft1k": _cfg(
         url="https://huggingface.co/sail/dl/resolve/main/caformer/caformer_b36_in21ft1k.pth"
+        # url="../pretrained/caformer_b36_in21ft1k.pth"
     ),
     "caformer_b36_384_in21ft1k": _cfg(
         url="https://huggingface.co/sail/dl/resolve/main/caformer/caformer_b36_384_in21ft1k.pth",
@@ -1820,9 +1821,10 @@ def caformer_b36_in21ft1k(pretrained=False, **kwargs):
     )
     model.default_cfg = default_cfgs["caformer_b36_in21ft1k"]
     if pretrained:
-        state_dict = torch.hub.load_state_dict_from_url(
-            url=model.default_cfg["url"], map_location="cpu", check_hash=True
-        )
+        # state_dict = torch.hub.load_state_dict_from_url(
+        #     url=model.default_cfg["url"], map_location="cpu", check_hash=True
+        # )
+        state_dict = torch.load("../pretrained/caformer_b36_in21ft1k.pth")
         model.load_state_dict(state_dict)
     return model
 

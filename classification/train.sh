@@ -1,6 +1,6 @@
-CUDA_VISIBLE_DEVICES=0,1,2,3,4,5 torchrun --standalone --nproc_per_node=6 \
+CUDA_VISIBLE_DEVICES=0 torchrun --standalone --nproc_per_node=1 \
   main_finetune.py \
-  --batch_size 16 \
+  --batch_size 128 \
   --blr 3e-4 \
   --warmup_epochs 15 \
   --epochs 300 \

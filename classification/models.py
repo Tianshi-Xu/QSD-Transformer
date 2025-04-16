@@ -1096,7 +1096,7 @@ from timm.models import create_model
 if __name__ == "__main__":
     #     import torchsummary
     # model = spikformer_12_512_CAFormer_less_conv(att_type="SDSA1")
-    model = spikformer_16_512_CAFormer_less_conv()
+    model = spikformer_18_512_CAFormer_less_conv()
     model.T = 1
     x= torch.randn(1, 3, 224, 224)
     # y = model(x)
@@ -1107,13 +1107,11 @@ if __name__ == "__main__":
     # print(msg)
     # x = torch.randn(1, 3, 224, 224)
     # print(model(x).shape)
-<<<<<<< HEAD
-    # print("Parameter numbers: {}".format(
-    #     sum(p.numel() for p in model.parameters())))
-=======
     print("Parameter numbers: {}".format(
         sum(p.numel() for p in model.parameters())))
     # checkpoint = torch.load("../pretrained/SD_Transformer_v2-L_6.8M_1x4_w4a1t4_80_3.pth",weights_only=True)
+    checkpoint = torch.load("../pretrained/caformer_b36_in21ft1k.pth")
+    print(checkpoint.keys())
     # checkpoint_model = checkpoint["model"]
     # new_ch = {}
     # for key in checkpoint_model.keys():
@@ -1124,7 +1122,6 @@ if __name__ == "__main__":
     #     checkpoint_model.pop("downsample3.encode_conv.weight")
     #     checkpoint_model.pop("downsample4.encode_conv.weight")
     # model.load_state_dict(checkpoint_model, strict=False)
->>>>>>> 2044a4f4a03175caf7b208c84c4e717e5e2c2005
     # torchsummary.summary(model, (2, 3, 224, 224))
 
 
