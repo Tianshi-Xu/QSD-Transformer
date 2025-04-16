@@ -39,24 +39,6 @@ import models
 from engine_finetune import train_one_epoch, evaluate
 from timm.data import create_loader
 from quan_w import Conv2dLSQ
-from util.loss import DistillationLoss
-
-# def change(train_set):
-#     import torchvision.datasets as datasets
-#     # 只加载训练集
-#     # train_set = datasets.ImageNet(root='/path/to/imagenet', split='train', download=True)
-#     # 取前500类
-#     subset_classes = list(range(500))
-#     train_set.targets = [c for c in train_set.targets if c in subset_classes]
-#     # 每类取前400张
-#     filtered_indices = []
-#     for c in subset_classes:
-#         cls_indices = [i for i, t in enumerate(train_set.targets) if t == c]
-#         filtered_indices.extend(cls_indices[:400])
-
-#     train_set.samples = [train_set.samples[i] for i in filtered_indices]
-#     train_set.targets = [train_set.targets[i] for i in filtered_indices]
-#     return train_set
 
 def get_args_parser():
     # important params
@@ -298,30 +280,6 @@ def get_args_parser():
     parser.add_argument("--wbit", default=4, type=int)
     
     parser.add_argument("--att_type", default="SDSA3", type=str)
-    
-    # kd
-    parser.add_argument(
-        "--kd",
-        action="store_true",
-        default=False,
-        help="kd or not",
-    )
-    parser.add_argument(
-        "--teacher_model",
-        default="caformer_b36_in21ft1k",
-        type=str,
-        metavar="MODEL",
-        help='Name of teacher model to train (default: "caformer_b36_in21ft1k"',
-    )
-    parser.add_argument(
-        "--distillation_type",
-        default="none",
-        choices=["none", "soft", "hard"],
-        type=str,
-        help="",
-    )
-    parser.add_argument("--distillation_alpha", default=0.5, type=float, help="")
-    parser.add_argument("--distillation_tau", default=1.0, type=float, help="")
 
     return parser
 
@@ -410,7 +368,7 @@ def main(args):
             label_smoothing=args.smoothing,
             num_classes=args.nb_classes,
         )
-    model = models.__dict__[args.model](att_type=args.att_type)
+    model = models.__dict__[args.model]()
     model.T = args.time_steps
     model_ema = None
     resume_epoch = None
@@ -418,9 +376,9 @@ def main(args):
         checkpoint = torch.load(args.finetune, map_location="cpu", weights_only=False)
         print("Load pre-trained checkpoint from: %s" % args.finetune)
         checkpoint_model = checkpoint["model"]
-        # if "downsample3.encode_conv.weight" in checkpoint_model.keys() or "downsample4.encode_conv.weight" in checkpoint_model.keys():
-        #     checkpoint_model.pop("downsample3.encode_conv.weight")
-        #     checkpoint_model.pop("downsample4.encode_conv.weight")
+        if "downsample3.encode_conv.weight" in checkpoint_model.keys() or "downsample4.encode_conv.weight" in checkpoint_model.keys():
+            checkpoint_model.pop("downsample3.encode_conv.weight")
+            checkpoint_model.pop("downsample4.encode_conv.weight")
         msg = model.load_state_dict(checkpoint_model, strict=False)
         print(msg)
     model.to(device)
@@ -428,7 +386,7 @@ def main(args):
         if isinstance(module, Conv2dLSQ):
             module.set_bit(args.wbit)
             module.nbits = args.wbit
-            # print(module)
+            print(module)
     if args.MODEL_EMA:
         # Important to create EMA model after cuda(), DP wrapper, and AMP but
         # before SyncBN and DDP wrapper
@@ -472,6 +430,18 @@ def main(args):
     # optimizer = torch.optim.AdamW(param_groups, lr=args.lr) # lamb
     optimizer = optim_factory.Lamb(param_groups, trust_clip=True, lr=args.lr)
     loss_scaler = NativeScaler()
+    # if args.resume:
+    #     resume_epoch = resume_checkpoint(
+    #         model, args.resume,
+    #         optimizer=optimizer,
+    #         loss_scaler=loss_scaler,
+    #         log_info=misc.get_rank() == 0)  
+        
+    # if args.start_epoch is not None:
+    #     # a specified start_epoch will always override the resume epoch
+    #     start_epoch = args.start_epoch
+    # elif resume_epoch is not None:
+    #     start_epoch = resume_epoch
         
     if mixup_fn is not None:
         # smoothing is handled with mixup label transform
@@ -497,104 +467,11 @@ def main(args):
         )
         # exit(0)
 
-    print(f"Start training for {args.epochs} epochs")
-    start_time = time.time()
-    max_accuracy = 0.0
-    best_acc = 0
-    best_epoch = 0
-    if args.kd:
-        teacher_model = None
-        if args.distillation_type == "none":
-            args.distillation_type = "hard"
-        print(f"Creating teacher model: {args.teacher_model}")
-        # teacher_model_name = importlib.import_module("metaformer."+args.teacher_model)
-        from metaformer import caformer_b36_in21ft1k
-
-        teacher_model = caformer_b36_in21ft1k(pretrained=True)
-        teacher_model.to(device)
-        teacher_model.eval()
-        test_stats = evaluate(data_loader_val, teacher_model, device)
-        print(
-            f"Accuracy of the teacher model on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
-        )
-        # wrap the criterion in our custom DistillationLoss, which
-        # just dispatches to the original criterion if args.distillation_type is 'none'
-        criterion = DistillationLoss(
-            criterion,
-            teacher_model,
-            args.distillation_type,
-            args.distillation_alpha,
-            args.distillation_tau,
-        )
-    for epoch in range(args.start_epoch, args.epochs):
-        if args.distributed:
-            data_loader_train.sampler.set_epoch(epoch)
-        train_stats,model_ema = train_one_epoch(
-            model,
-            criterion,
-            data_loader_train,
-            optimizer,
-            device,
-            epoch,
-            loss_scaler,
-            args.clip_grad,
-            mixup_fn,
-            log_writer=log_writer,
-            args=args,
-            model_ema=model_ema)
-        misc.save_model(
-            args=args,
-            model=model_ema,
-            model_without_ddp=model_without_ddp,
-            optimizer=optimizer,
-            loss_scaler=loss_scaler,
-            epoch=epoch,
-            name = "last_checkpoint"
-        )
-
-        test_stats = evaluate(data_loader_val, model, device)
-        print(
-            f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%"
-        )
-        
-        if args.output_dir and test_stats["acc1"] > max_accuracy:
-            print("Saving model at epoch:", epoch)
-            misc.save_model(
-                args=args,
-                model=model,
-                model_without_ddp=model_without_ddp,
-                optimizer=optimizer,
-                loss_scaler=loss_scaler,
-                epoch=epoch,
-                name = "best_checkpoint"
-            )
-            best_epoch = epoch
-        max_accuracy = max(max_accuracy, test_stats["acc1"])
-        print(f"Max accuracy: {max_accuracy:.2f}%")
-        if log_writer is not None:
-            log_writer.add_scalar("perf/test_acc1", test_stats["acc1"], epoch)
-            log_writer.add_scalar("perf/test_acc5", test_stats["acc5"], epoch)
-            log_writer.add_scalar("perf/test_loss", test_stats["loss"], epoch)
-
-        log_stats = {
-            **{f"train_{k}": v for k, v in train_stats.items()},
-            **{f"test_{k}": v for k, v in test_stats.items()},
-            "epoch": epoch,
-            "n_parameters": n_parameters,
-        }
-
-        if args.output_dir and misc.is_main_process():
-            if log_writer is not None:
-                log_writer.flush()
-            with open(
-                os.path.join(args.output_dir, "log.txt"), mode="a", encoding="utf-8"
-            ) as f:
-                f.write(json.dumps(log_stats) + "\n")
-
-    total_time = time.time() - start_time
-    total_time_str = str(datetime.timedelta(seconds=int(total_time)))
-    print("Training time {}".format(total_time_str))
-    print("Best accuracy: {:.2f}% at epoch {}".format(max_accuracy, best_epoch))
+def stat_bacc(model):
+    x = torch.randn(1, 3, 224, 224).cuda()
+    y = model(x)
+    
+    
 if __name__ == "__main__":
     args = get_args_parser()
     args = args.parse_args()

@@ -490,7 +490,6 @@ class MS_Block(nn.Module):
         x = x + self.mlp(x) * self.layer_scale2.unsqueeze(0).unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
         return x
 
-
 class MS_DownSampling(nn.Module):
     def __init__(
             self,
@@ -728,10 +727,6 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
         self.T = 1
         # embed_dim = [64, 128, 256, 512]
 
-        dpr = [
-            x.item() for x in torch.linspace(0, drop_path_rate, depths)
-        ]  # stochastic depth decay rule
-
         self.downsample1_1 = MS_DownSampling(
             in_channels=in_channels,
             embed_dims=embed_dim[0] // 2,
@@ -754,8 +749,25 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
             first_layer=False,
         )
 
-        self.ConvBlock1_2 = nn.ModuleList(
-            [MS_ConvBlock(dim=embed_dim[0], mlp_ratio=mlp_ratios)]
+        # self.ConvBlock1_2 = nn.ModuleList(
+        #     [MS_ConvBlock(dim=embed_dim[0], mlp_ratio=mlp_ratios)]
+        # )
+        self.block1 = nn.ModuleList(
+            [
+                MS_Block(
+                    dim=embed_dim[0],
+                    num_heads=num_heads,
+                    mlp_ratio=mlp_ratios,
+                    qkv_bias=qkv_bias,
+                    qk_scale=qk_scale,
+                    drop=drop_rate,
+                    attn_drop=attn_drop_rate,
+                    norm_layer=norm_layer,
+                    sr_ratio=sr_ratios,
+                    att_type=att_type,
+                )
+                for j in range(int(depths[0]))
+            ]
         )
 
         self.downsample2 = MS_DownSampling(
@@ -785,21 +797,20 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
                     qk_scale=qk_scale,
                     drop=drop_rate,
                     attn_drop=attn_drop_rate,
-                    drop_path=dpr[j],
                     norm_layer=norm_layer,
                     sr_ratio=sr_ratios,
                     att_type=att_type,
                 )
-                for j in range(int(depths * 0.5))
+                for j in range(int(depths[1]))
             ]
         )
         
         self.downsample3 = MS_DownSampling(
             in_channels=embed_dim[1],
             embed_dims=embed_dim[2],
-            kernel_size=1,
-            stride=1,
-            padding=0,
+            kernel_size=3,
+            stride=2,
+            padding=1,
             first_layer=False,
         )
 
@@ -813,21 +824,20 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
                     qk_scale=qk_scale,
                     drop=drop_rate,
                     attn_drop=attn_drop_rate,
-                    drop_path=dpr[j],
                     norm_layer=norm_layer,
                     sr_ratio=sr_ratios,
                     att_type=att_type,
                 )
-                for j in range(int(depths * 0.75))
+                for j in range(int(depths[2]))
             ]
         )
 
         self.downsample4 = MS_DownSampling(
             in_channels=embed_dim[2],
             embed_dims=embed_dim[3],
-            kernel_size=1,
+            kernel_size=3,
             stride=1,
-            padding=0,
+            padding=1,
             first_layer=False,
         )
 
@@ -841,12 +851,11 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
                     qk_scale=qk_scale,
                     drop=drop_rate,
                     attn_drop=attn_drop_rate,
-                    drop_path=dpr[j],
                     norm_layer=norm_layer,
                     sr_ratio=sr_ratios,
                     att_type=att_type,
                 )
-                for j in range(int(depths * 0.25))
+                for j in range(int(depths[3]))
             ]
         )
 
@@ -870,7 +879,9 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
             x = blk(x)
         #         print(x.shape)
         x = self.downsample1_2(x)
-        for blk in self.ConvBlock1_2:
+        # for blk in self.ConvBlock1_2:
+        #     x = blk(x)
+        for blk in self.block1:
             x = blk(x)
         #         print(x.shape)
         x = self.downsample2(x)
@@ -1008,7 +1019,6 @@ def spikformer_8_768_CAFormer(**kwargs):
     )
     return model
 
-
 def spikformer_8_15M_CAFormer(**kwargs):
     model = Spiking_vit_MetaFormer(
         img_size_h=224,
@@ -1063,19 +1073,19 @@ def spikformer_8_512_CAFormer_less_conv(**kwargs):
     )
     return model
 
-def spikformer_12_512_CAFormer_less_conv(**kwargs):
+def spikformer_18_512_CAFormer_less_conv(**kwargs):
     model = Spiking_vit_MetaFormer_less_conv(
         img_size_h=224,
         img_size_w=224,
         patch_size=16,
-        embed_dim=[128, 256, 512, 640],
+        embed_dim=[64, 128, 320, 512],
         num_heads=8,
         mlp_ratios=4,
         in_channels=3,
         num_classes=1000,
         qkv_bias=False,
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        depths=12,
+        depths=[3,4,8,3],
         sr_ratios=1,
         **kwargs,
     )
@@ -1085,8 +1095,8 @@ from timm.models import create_model
 
 if __name__ == "__main__":
     #     import torchsummary
-    # state_dict = torch.load('/userhome/DYS/15M/checkpoint-199.pth', map_location=torch.device('cuda'))
-    model = spikformer_12_512_CAFormer_less_conv(att_type="SDSA1")
+    # model = spikformer_12_512_CAFormer_less_conv(att_type="SDSA1")
+    model = spikformer_16_512_CAFormer_less_conv()
     model.T = 1
     x= torch.randn(1, 3, 224, 224)
     # y = model(x)
@@ -1097,8 +1107,24 @@ if __name__ == "__main__":
     # print(msg)
     # x = torch.randn(1, 3, 224, 224)
     # print(model(x).shape)
+<<<<<<< HEAD
     # print("Parameter numbers: {}".format(
     #     sum(p.numel() for p in model.parameters())))
+=======
+    print("Parameter numbers: {}".format(
+        sum(p.numel() for p in model.parameters())))
+    # checkpoint = torch.load("../pretrained/SD_Transformer_v2-L_6.8M_1x4_w4a1t4_80_3.pth",weights_only=True)
+    # checkpoint_model = checkpoint["model"]
+    # new_ch = {}
+    # for key in checkpoint_model.keys():
+    #     if "downsample1_1" in key or "downsample1_2" in key or "ConvBlock1_1" in key:
+    #         new_ch[key] = checkpoint_model[key]
+    # model.load_state_dict(new_ch, strict=False)
+    # if "downsample3.encode_conv.weight" in checkpoint_model.keys() or "downsample4.encode_conv.weight" in checkpoint_model.keys():
+    #     checkpoint_model.pop("downsample3.encode_conv.weight")
+    #     checkpoint_model.pop("downsample4.encode_conv.weight")
+    # model.load_state_dict(checkpoint_model, strict=False)
+>>>>>>> 2044a4f4a03175caf7b208c84c4e717e5e2c2005
     # torchsummary.summary(model, (2, 3, 224, 224))
 
 

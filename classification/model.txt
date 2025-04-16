@@ -196,7 +196,11 @@ Spiking_vit_MetaFormer_less_conv(
   )
   (block4): ModuleList(
     (0-2): 3 x MS_Block(
+<<<<<<< HEAD
       (attn): SDSA1(
+=======
+      (attn): MS_Attention_RepConv_qkv_id(
+>>>>>>> 2044a4f4a03175caf7b208c84c4e717e5e2c2005
         (head_lif): Multispike()
         (q_conv): Conv2dLSQ(
           640, 640, kernel_size=(1, 1), stride=(1, 1), bias=False, {'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>}
@@ -244,3 +248,8 @@ Spiking_vit_MetaFormer_less_conv(
     (act): ActLSQ({'nbits': 4, 'mode': <Qmodes.kernel_wise: 2>})
   )
 )
+<<<<<<< HEAD
+=======
+torch.Size([1, 1000])
+Parameter numbers: 75022870
+>>>>>>> 2044a4f4a03175caf7b208c84c4e717e5e2c2005
