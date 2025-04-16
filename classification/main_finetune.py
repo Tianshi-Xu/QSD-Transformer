@@ -410,7 +410,7 @@ def main(args):
             label_smoothing=args.smoothing,
             num_classes=args.nb_classes,
         )
-    model = models.__dict__[args.model]()
+    model = models.__dict__[args.model](kd=args.kd, att_type=args.att_type)
     model.T = args.time_steps
     model_ema = None
     resume_epoch = None
