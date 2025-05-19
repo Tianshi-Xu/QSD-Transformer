@@ -1,6 +1,6 @@
-CUDA_VISIBLE_DEVICES=0 torchrun --standalone --nproc_per_node=1 \
+CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --standalone --nproc_per_node=4 \
   main_finetune.py \
-  --batch_size 128 \
+  --batch_size 456 \
   --blr 3e-4 \
   --warmup_epochs 15 \
   --epochs 300 \
@@ -13,6 +13,7 @@ CUDA_VISIBLE_DEVICES=0 torchrun --standalone --nproc_per_node=1 \
   --kd \
   --teacher_model caformer_b36_in21ft1k \
   --distillation_type hard \
+  --resume ./out/less_conv_SDSA1/last_checkpoint.pth \
   --wbit 32
   # 
   # --resume /home/xts/code/SNN/QSD-Transformer/classification/out/att_no_conv3/best_checkpoint.pth

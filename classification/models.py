@@ -884,26 +884,32 @@ class Spiking_vit_MetaFormer_less_conv(nn.Module):
 
     def forward_features(self, x):
         x = self.downsample1_1(x)
+        print(x.shape)
         for blk in self.ConvBlock1_1:
             x = blk(x)
-        #         print(x.shape)
+        print(x.shape)
         x = self.downsample1_2(x)
+        print(x.shape)
         # for blk in self.ConvBlock1_2:
         #     x = blk(x)
         for blk in self.block1:
             x = blk(x)
-        #         print(x.shape)
+        print(x.shape)
         x = self.downsample2(x)
+        print(x.shape)
         for blk in self.block2:
             x = blk(x)
-        #         print(x.shape)
+        print(x.shape)
         x = self.downsample3(x)
+        print(x.shape)
         for blk in self.block3:
             x = blk(x)
-        #         print(x.shape)
+        print(x.shape)
         x = self.downsample4(x)
+        print(x.shape)
         for blk in self.block4:
             x = blk(x)
+        print(x.shape)
         return x  # T,B,C,N
 
     def forward(self, x):
@@ -1103,7 +1109,6 @@ def spikformer_18_512_CAFormer_less_conv(**kwargs):
         norm_layer=partial(nn.LayerNorm, eps=1e-6),
         depths=[3,4,8,3],
         sr_ratios=1,
-        kd=False,
         **kwargs,
     )
     return model
@@ -1116,19 +1121,19 @@ if __name__ == "__main__":
     model = spikformer_18_512_CAFormer_less_conv()
     model.T = 1
     x= torch.randn(1, 3, 224, 224)
-    # y = model(x)
+    y = model(x)
     # print(y.shape)
-    print(model)  
+    # print(model)  
     # print(y.shape)
     # msg = model.load_state_dict(state_dict["model"], strict=False)
     # print(msg)
     # x = torch.randn(1, 3, 224, 224)
     # print(model(x).shape)
-    print("Parameter numbers: {}".format(
-        sum(p.numel() for p in model.parameters())))
-    # checkpoint = torch.load("../pretrained/SD_Transformer_v2-L_6.8M_1x4_w4a1t4_80_3.pth",weights_only=True)
-    checkpoint = torch.load("../pretrained/caformer_b36_in21ft1k.pth")
-    print(checkpoint.keys())
+    # print("Parameter numbers: {}".format(
+    #     sum(p.numel() for p in model.parameters())))
+    # # checkpoint = torch.load("../pretrained/SD_Transformer_v2-L_6.8M_1x4_w4a1t4_80_3.pth",weights_only=True)
+    # checkpoint = torch.load("../pretrained/caformer_b36_in21ft1k.pth")
+    # print(checkpoint.keys())
     # checkpoint_model = checkpoint["model"]
     # new_ch = {}
     # for key in checkpoint_model.keys():
